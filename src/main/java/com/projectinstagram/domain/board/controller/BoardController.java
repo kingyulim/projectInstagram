@@ -2,6 +2,7 @@ package com.projectinstagram.domain.board.controller;
 
 import com.projectinstagram.domain.board.dto.CreateBoardRequest;
 import com.projectinstagram.domain.board.dto.CreateBoardResponse;
+import com.projectinstagram.domain.board.dto.ReadOneBoardResponse;
 import com.projectinstagram.domain.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,5 +22,8 @@ public class BoardController {
     public ResponseEntity<CreateBoardResponse> create(@RequestBody CreateBoardRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(boardService.createBoard(null, request));
     }
+
+//    @PostMapping("/boards/{boardId}")
+//    public ResponseEntity<ReadOneBoardResponse>
 
 }
