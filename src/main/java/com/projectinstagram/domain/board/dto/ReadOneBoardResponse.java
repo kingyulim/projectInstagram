@@ -17,15 +17,18 @@ public class ReadOneBoardResponse {
     private String content;
     private int likeCount;
     private int commentCount;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    public ReadoneBoardResponse(Board board, User user) {
+    public ReadOneBoardResponse(Board board, User user) {
         this.id = board.getId();
         this.nickName = user.getNickname();
         this.profileImg = user.getProfileImage();
         this.contentImg = board.getContentImg();
         this.content = board.getContent();
-        this.likeCount =
+        this.likeCount = 1; // 더미데이터
+        this.commentCount = 1; // 더미데이터
+        this.createdAt = board.getCreatedAt();
+        this.modifiedAt = board.getModifiedAt();
     }
 }
