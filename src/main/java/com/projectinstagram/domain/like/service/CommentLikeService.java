@@ -1,9 +1,49 @@
 package com.projectinstagram.domain.like.service;
 
+import com.projectinstagram.common.exception.CustomException;
+import com.projectinstagram.domain.comment.entity.Comment;
+import com.projectinstagram.domain.like.dto.CreateResponse;
+import com.projectinstagram.domain.like.entity.CommentLike;
+import com.projectinstagram.domain.like.entity.CommentLikeId;
+import com.projectinstagram.domain.like.repository.CommentLikeRepository;
+import com.projectinstagram.domain.like.repository.CommentRepository;
+import com.projectinstagram.domain.like.repository.UserRepository;
+import com.projectinstagram.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import static com.projectinstagram.common.exception.ExceptionMessageEnum.COMMENT_NOT_FOUND_EXCEPTION;
+import static com.projectinstagram.common.exception.ExceptionMessageEnum.NO_MEMBER_ID;
 
 @Service
 @RequiredArgsConstructor
 public class CommentLikeService {
+    private final CommentLikeRepository commentLikeRepository;
+    private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
+
+    //좋아요 - 댓글
+    //Q. API명세서 boardId 받았으나 필요없는듯 함.
+    public CreateResponse CreateCommentLike(Long commentId, Long userId/*필터로부터 받은 값(수정필요)*/) {
+
+        if (userId == null) {throw new CustomException(NO_MEMBER_ID);}
+        if (commentId == null) {throw new CustomException(COMMENT_NOT_FOUND_EXCEPTION);}
+        CommentLikeId commentLikeId = new CommentLikeId(commentId, userId);
+        boolean isLiked = commentLikeRepository.existsById(commentLikeId); //좋아요가 이미 눌려있는지 확인
+
+        if (isLiked == true) {
+            commentLikeRepository.deleteById(commentLikeId); //좋아요가 이미 눌려있으면 좋아요 취소
+        } else {
+            Comment comment = commentRepository.findById(commentId).orElseThrow(
+                    () -> new CustomException(COMMENT_NOT_FOUND_EXCEPTION));
+            User user = userRepository.findById(userId).orElseThrow(
+                    () -> new CustomException(NO_MEMBER_ID));
+            CommentLike commentLike = new CommentLike(comment, user);
+            commentLikeRepository.save(commentLike); //좋아요가 안눌려있으면 좋아요 생성
+        }
+
+        Long likeCount = commentLikeRepository.countByCommentIdComment(commentId); //선택된 댓글의 좋아요 수 반환
+
+        return new CreateResponse(likeCount);
+    }
 }

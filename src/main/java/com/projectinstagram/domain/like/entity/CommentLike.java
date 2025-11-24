@@ -12,21 +12,24 @@ import lombok.NoArgsConstructor;
 @Table(name = "comment_likes")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentLike {
-    //복합키로 해결할 예정
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
+    @EmbeddedId
+    private CommentLikeId id;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "comment_id", nullable = false)
-    private Comment commentId;
+    @MapsId("commentId")//복합키의 commentId와 매핑
+    private Comment comment;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private User userId;
+    @MapsId("userId") //복합키의 userId와 매핑
+    private User user; //Q. user_id와 맵핑여부는 위에 나옴. user로 적어야 repository에서 쿼리문이 이해가 잘됨.
 
 
-    public CommentLike(Comment commentId, User userId) {
-        this.commentId = commentId;
-        this.userId = userId;
+    public CommentLike(Comment comment, User user) {
+        this.comment = comment;
+        this.user = user;
     }
 
 }
