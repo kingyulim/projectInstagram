@@ -16,6 +16,11 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
 
+    /**
+     * 회원가입 비니지스 로직 처리
+     * @param request 회원가입 입력 데이터 파라미터
+     * @return UserJoinResponseDto 데이터 반환
+     */
     public UserJoinResponseDto join(UserJoinRequestDto request) {
         User user = new User(
                 request.getEmail(),
