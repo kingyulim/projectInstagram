@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
 
+    /**
+     * 회원가임 검증 요청
+     * @param request 회원가입 입력값 파라미터
+     * @return UserJoinResponseDto json 반환
+     */
     @PostMapping("/join")
     public ResponseEntity<UserJoinResponseDto> join(@Valid @RequestBody UserJoinRequestDto request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.join(request));
