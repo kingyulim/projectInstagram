@@ -65,4 +65,31 @@ public class UserService {
                 joinedUser.getNickname()
         );
     }
+
+    /**
+     * 로그인 비지니스 로직 처리
+     * @param request 로그인 입력값 파라미터
+     * @return UserLoginResponseDto 데이터 반환
+     */
+    public UserLoginResponseDto login(UserLoginRequestDto request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(
+                        () -> new CustomException(ExceptionMessageEnum.NO_MEMBER_INFO)
+                );
+
+        boolean passwordMatches = passwordEncoder.matches(request.getPassword(), user.getPassword());
+        if (!passwordMatches) {
+            throw new CustomException(ExceptionMessageEnum.INVALID_MEMBER_INFO);
+        }
+
+        return new UserLoginResponseDto(
+                user.getId(),
+                user.getNickname(),
+                user.getName(),
+                user.getProfileImage(),
+                user.getIntroduce(),
+                user.getCreatedAt(),
+                user.getModifiedAt()
+        );
+    }
 }
