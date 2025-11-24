@@ -6,11 +6,14 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
 @Getter
 @Entity
 @Table(name="boards")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+//@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Board extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,4 +22,10 @@ public class Board extends BaseTimeEntity {
     @JoinColumn(name="user_id")
     private User userId;
     private String content;
+
+    // Board.java
+    public Board(User userId, String content) {
+        this.userId = userId;
+        this.content = content;
+    }
 }
