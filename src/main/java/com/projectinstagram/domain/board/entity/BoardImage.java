@@ -1,4 +1,4 @@
-package com.projectinstagram.domain.entity;
+package com.projectinstagram.domain.board.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -7,16 +7,15 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name="comments")
+@Table(name="board_images")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment extends BaseTimeEntity{
+public class BoardImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name="board_id")
     private Board boardId;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="user_id")
-    private User userId;
+    @Column(name="file_name")
+    private String fileName;
 }

@@ -1,5 +1,8 @@
-package com.projectinstagram.domain.entity;
+package com.projectinstagram.domain.comment.entity;
 
+import com.projectinstagram.common.entity.BaseTimeEntity;
+import com.projectinstagram.domain.board.entity.Board;
+import com.projectinstagram.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -7,19 +10,16 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name="comment_likes")
+@Table(name="comments")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommentLike {
-    //복합키로 해결할 예정
+public class Comment extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="comment_id")
-    private Comment commentId;
+    @JoinColumn(name="board_id")
+    private Board boardId;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="user_id")
     private User userId;
-
-
 }
