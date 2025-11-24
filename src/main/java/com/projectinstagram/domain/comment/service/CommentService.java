@@ -1,9 +1,7 @@
 package com.projectinstagram.domain.comment.service;
 
 import com.projectinstagram.domain.board.entity.Board;
-import com.projectinstagram.domain.comment.dto.CreateCommentRequest;
-import com.projectinstagram.domain.comment.dto.CreateCommentResponse;
-import com.projectinstagram.domain.comment.dto.GetCommentResponse;
+import com.projectinstagram.domain.comment.dto.*;
 import com.projectinstagram.domain.comment.entity.Comment;
 import com.projectinstagram.domain.comment.repository.BoardRepository;
 import com.projectinstagram.domain.comment.repository.CommentRepository;
@@ -57,4 +55,11 @@ public class CommentService {
                 .toList();
     }
 
+    // 댓글수정
+    @Transactional
+    public UpdateCommentResponse update(Long commentId, UpdateCommentRequest request) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("없는 댓글입니다."));
+        comment.update(request.getContent());
+        return new UpdateCommentResponse(comment.getId(), comment.getUserId().getId(), comment.getBoardId().getId(), comment.getContent(), comment.getCreatedAt(), comment.getModifiedAt());
+    }
 }

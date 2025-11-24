@@ -1,8 +1,6 @@
 package com.projectinstagram.domain.comment.controller;
 
-import com.projectinstagram.domain.comment.dto.CreateCommentRequest;
-import com.projectinstagram.domain.comment.dto.CreateCommentResponse;
-import com.projectinstagram.domain.comment.dto.GetCommentResponse;
+import com.projectinstagram.domain.comment.dto.*;
 import com.projectinstagram.domain.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,10 +27,14 @@ public class CommentController {
 
     // 댓글 조회하기
     @GetMapping("/{boardId}/comments")
-    public ResponseEntity<List<GetCommentResponse>> getComments(
-            @PathVariable Long boardId
-    ) {
+    public ResponseEntity<List<GetCommentResponse>> getComments(@PathVariable Long boardId) {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.getAll(boardId));
 
+    }
+
+    // 댓글 수정하기
+    @PatchMapping("/{boardId}/comments/{commentId}")
+    public ResponseEntity<UpdateCommentResponse> updateComment(@PathVariable Long commentId, @RequestBody UpdateCommentRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(commentService.update(commentId, request));
     }
 }

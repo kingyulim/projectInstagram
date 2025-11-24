@@ -30,4 +30,9 @@ public class Comment extends BaseTimeEntity {
         this.userId = userId;
         this.content = content;
     }
+
+    public void update(String content) {
+        this.content = content;
+    }
+
 }
