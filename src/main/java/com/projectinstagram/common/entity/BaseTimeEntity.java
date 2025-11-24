@@ -1,4 +1,4 @@
-package com.projectinstagram.domain.entity;
+package com.projectinstagram.common.entity;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
