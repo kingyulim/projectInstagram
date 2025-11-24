@@ -1,0 +1,21 @@
+package com.projectinstagram.domain.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+
+@Getter
+@Entity
+@Table(name="board_likes")
+public class BoardLike {
+    //복합키 넣을 예정
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="board_id")
+    private Board boardId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="user_id")
+    private User userId;
+}
