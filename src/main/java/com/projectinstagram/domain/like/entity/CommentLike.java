@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name="comment_likes")
+@Table(name = "comment_likes")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentLike {
     //복합키로 해결할 예정
@@ -17,11 +17,16 @@ public class CommentLike {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="comment_id")
+    @JoinColumn(name = "comment_id", nullable = false)
     private Comment commentId;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User userId;
 
+
+    public CommentLike(Comment commentId, User userId) {
+        this.commentId = commentId;
+        this.userId = userId;
+    }
 
 }
