@@ -8,4 +8,5 @@ import java.util.List;
 public class CreateBoardRequest {
     private String content;
     private List<String> contentImg;
+
 }
