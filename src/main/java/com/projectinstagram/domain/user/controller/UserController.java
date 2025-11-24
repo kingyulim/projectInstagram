@@ -1,7 +1,9 @@
 package com.projectinstagram.domain.user.controller;
 
 import com.projectinstagram.domain.user.dto.request.UserJoinRequestDto;
+import com.projectinstagram.domain.user.dto.request.UserLoginRequestDto;
 import com.projectinstagram.domain.user.dto.response.UserJoinResponseDto;
+import com.projectinstagram.domain.user.dto.response.UserLoginResponseDto;
 import com.projectinstagram.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +26,15 @@ public class UserController {
     @PostMapping("/join")
     public ResponseEntity<UserJoinResponseDto> join(@Valid @RequestBody UserJoinRequestDto request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.join(request));
+    }
+
+    /**
+     * 로그인 검증 요청
+     * @param request 로그인 입력값 파라미터
+     * @return UserLoginResponseDto json 반환
+     */
+    @PostMapping("/login")
+    public ResponseEntity<UserLoginResponseDto> login(@Valid @RequestBody UserLoginRequestDto request) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.login(request));
     }
 }
