@@ -41,6 +41,3 @@ out/
 application.yml
 ### 환경변수 파일 ###
 .env
-
-### aplication ###
-/src/main/resources/application.properties
