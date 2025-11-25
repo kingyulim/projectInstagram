@@ -10,7 +10,7 @@ public class BoardDto {
     private Long id;
     private User userId;
     private String content;
-    private LocalDateTime createdAt;
+    private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
 
     public BoardDto(CreateBoardRequest request){
