@@ -8,7 +8,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 
 @Getter
 @Entity
@@ -22,12 +21,13 @@ public class Board extends BaseTimeEntity {
     @JoinColumn(name="user_id")
     private User userId;
     private String content;
-    private List<String> contentImg;
 
     public Board(User user, CreateBoardRequest request) {
         this.userId = user;
         this.content = request.getContent();
-        this.contentImg = request.getContentImg();
     }
 
+    public static Board from(User user, CreateBoardRequest request) {
+        return new Board(user, request);
+    }
 }

@@ -18,4 +18,9 @@ public class BoardImage {
     private Board boardId;
     @Column(name="file_name")
     private String fileName;
+
+    public BoardImage(Board boardId, String fileName) {
+        this.boardId = boardId;
+        this.fileName = fileName;
+    }
 }

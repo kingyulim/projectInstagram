@@ -2,19 +2,19 @@ package com.projectinstagram.domain.board.controller;
 
 import com.projectinstagram.domain.board.dto.CreateBoardRequest;
 import com.projectinstagram.domain.board.dto.CreateBoardResponse;
-import com.projectinstagram.domain.board.dto.ReadAllBoardResponse;
-import com.projectinstagram.domain.board.dto.ReadOneBoardResponse;
+import com.projectinstagram.domain.board.dto.ReadBoardResponse;
 import com.projectinstagram.domain.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/Boards")
+@RequestMapping("/boards")
 public class BoardController {
     private final BoardService boardService;
 
@@ -23,15 +23,22 @@ public class BoardController {
         return ResponseEntity.status(HttpStatus.CREATED).body(boardService.createBoard(null, request));
     }
 
-    @PostMapping("/boards/{boardId}")
-    public ResponseEntity<ReadOneBoardResponse> read(@PathVariable Long boardId) {
+    @PostMapping("/{boardId}")
+    public ResponseEntity<ReadBoardResponse> read(@PathVariable Long boardId) {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.readOneBoard(boardId));
     }
 
-    @PostMapping("/boards")
-    public ResponseEntity<ReadAllBoardResponse> readAll(@PathVariable List<String> boardIds) {
-        return ResponseEntity.status(HttpStatus.OK).body(boardService.readAllBoard(boardIds));
+    /** 팔로우 한 사람의 게시물 목록 뿌리기 위해 토큰 필요.*/
+    @PostMapping
+    public ResponseEntity<List<ReadBoardResponse>> readAll(@RequestParam Long id) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.readAllBoard(id));
     }
 
+    @PostMapping("/upload_image")
+    public ResponseEntity<Void> upload(@RequestPart MultipartFile image, @RequestBody CreateBoardRequest request) {
+        boardService.uploadImages(image, request);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 
 }
