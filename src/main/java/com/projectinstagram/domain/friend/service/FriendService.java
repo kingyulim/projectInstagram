@@ -26,7 +26,7 @@ public class FriendService {
         Long userIdTo = request.getUserIdTo();
         if (userIdFrom == null) {throw new CustomException(NO_MEMBER_ID);}/*토큰으로부터 받으면 검사 안해도되나?*/
         if (userIdTo == null) {throw new CustomException(NO_MEMBER_ID);}
-        if (userIdTo.equals(userIdFrom)) {throw new CustomException(null);} //스스로를 친구할 수 없는 기능 /*병합시 User 엔티티의 user필드 명칭 변경되면 에러*/ /*에러 추가: 스스로를 친구추가할 수 없습니다.*/
+        if (userIdTo.equals(userIdFrom)) {throw new CustomException(null);} //스스로를 친구할 수 없는 기능 /*병합시 User 엔티티의 user필드 명칭 변경되면 에러*/ /*401 Unauthorized에러 추가: 스스로를 친구추가할 수 없습니다.*/
         FriendId friendId = new FriendId(userIdFrom, userIdTo);
         boolean isFriended = friendRepository.existsById(friendId); //이미 친구인지 확인
 
