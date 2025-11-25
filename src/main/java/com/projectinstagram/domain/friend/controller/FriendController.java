@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class FriendController {
     private final FriendService friendService;
 
-    //팔로우 (친구추가 및 취소)
+    //친구추가 (팔로우)
     @PostMapping
     public ResponseEntity<CreateResponse> follow(@RequestBody @Valid CreateRequest request, @RequestParam Long userIdFrom/*토큰에서 받는것으로 추후 수정*/) {
         return ResponseEntity.status(HttpStatus.OK).body(friendService.createResponse(request, userIdFrom));

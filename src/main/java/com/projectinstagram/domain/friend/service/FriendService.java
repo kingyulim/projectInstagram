@@ -21,18 +21,17 @@ public class FriendService {
     private final FriendRepository friendRepository;
     private final UserRepository userRepository;
 
-    //팔로우 (친구추가 및 취소)
+    //친구추가 (팔로우)
     public CreateResponse createResponse(CreateRequest request, Long userIdFrom/*토큰으로부터 받은 값(수정필요)*/) {
         Long userIdTo = request.getUserIdTo();
-        if (userIdFrom == null) {throw new CustomException(NO_MEMBER_ID);}/*토큰으로부터 받으면 검사 안해도되나?*/
+        if (userIdFrom == null) {throw new CustomException(NO_MEMBER_ID);}
         if (userIdTo == null) {throw new CustomException(NO_MEMBER_ID);}
-        if (userIdTo.equals(userIdFrom)) {throw new CustomException(null);} //스스로를 친구할 수 없는 기능 /*병합시 User 엔티티의 user필드 명칭 변경되면 에러*/ /*401 Unauthorized에러 추가: 스스로를 친구추가할 수 없습니다.*/
+        if (userIdTo.equals(userIdFrom)) {throw new CustomException(null);} //스스로를 친구할 수 없는 기능 /*401 Unauthorized에러 추가: 스스로를 친구추가할 수 없습니다.*/
         FriendId friendId = new FriendId(userIdFrom, userIdTo);
-        boolean isFriended = friendRepository.existsById(friendId); //이미 친구인지 확인
+        boolean isFriended = friendRepository.existsById(friendId); //이미 친구인지 확인, 친구이면 에러
 
-        if (isFriended == true) {
-            friendRepository.deleteById(friendId); //이미 친구면 친구취소
-        } else {
+        if (isFriended == true) {throw new CustomException(null);} //*401 Unauthorized에러 추가: 이미 친구입니다.*/
+         else {
                 User userTo = userRepository.findById(userIdTo).orElseThrow(() -> new CustomException(NO_MEMBER_ID));
                 User userFrom = userRepository.findById(userIdFrom).orElseThrow(() -> new CustomException(NO_MEMBER_ID));
                 Friend friend = new Friend(userFrom, userTo);
