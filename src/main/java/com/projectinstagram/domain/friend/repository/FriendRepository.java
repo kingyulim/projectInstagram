@@ -1,0 +1,11 @@
+package com.projectinstagram.domain.friend.repository;
+
+import com.projectinstagram.domain.friend.entity.Friend;
+import com.projectinstagram.domain.friend.entity.FriendId;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface FriendRepository extends JpaRepository<Friend, FriendId> {
+
+}
