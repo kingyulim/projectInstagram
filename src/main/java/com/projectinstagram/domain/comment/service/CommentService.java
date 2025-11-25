@@ -3,9 +3,7 @@ package com.projectinstagram.domain.comment.service;
 import com.projectinstagram.domain.board.entity.Board;
 import com.projectinstagram.domain.comment.dto.*;
 import com.projectinstagram.domain.comment.entity.Comment;
-import com.projectinstagram.domain.comment.repository.BoardRepository;
 import com.projectinstagram.domain.comment.repository.CommentRepository;
-import com.projectinstagram.domain.comment.repository.UserRepository;
 import com.projectinstagram.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -62,4 +60,14 @@ public class CommentService {
         comment.update(request.getContent());
         return new UpdateCommentResponse(comment.getId(), comment.getUserId().getId(), comment.getBoardId().getId(), comment.getContent(), comment.getCreatedAt(), comment.getModifiedAt());
     }
+
+    @Transactional
+    public void delete(Long commentId) {
+        boolean existence = commentRepository.existsById(commentId);
+        if (!existence) {
+            throw new IllegalStateException("없는 댓글입니다");
+        }
+        commentRepository.deleteById(commentId);
+    }
+
 }

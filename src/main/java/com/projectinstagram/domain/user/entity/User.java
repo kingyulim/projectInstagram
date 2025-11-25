@@ -7,12 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
 @Getter
 @Entity
 @Table(name="users")
-//@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,17 +23,6 @@ public class User extends BaseTimeEntity {
     private Boolean isDeletion;
     private String password;
 
-
-    // User.java
-    public User(String email, String nickname, String name, String profileImage, String introduce, Boolean isDeletion, String password) {
-        this.email = email;
-        this.nickname = nickname;
-        this.name = name;
-        this.profileImage = profileImage;
-        this.introduce = introduce;
-        this.isDeletion = isDeletion;
-        this.password = password;
-    }
 
 
 }

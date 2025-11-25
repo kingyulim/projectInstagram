@@ -37,4 +37,11 @@ public class CommentController {
     public ResponseEntity<UpdateCommentResponse> updateComment(@PathVariable Long commentId, @RequestBody UpdateCommentRequest request) {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.update(commentId, request));
     }
+
+    // 댓글 삭제하기
+    @DeleteMapping("/{boardId}/comments/{commentId}")
+    public ResponseEntity<Void>deleteComment(@PathVariable Long commentId) {
+        commentService.delete(commentId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

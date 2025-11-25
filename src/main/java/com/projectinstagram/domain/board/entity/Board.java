@@ -8,12 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
 @Getter
 @Entity
 @Table(name="boards")
-//@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,9 +21,4 @@ public class Board extends BaseTimeEntity {
     private User userId;
     private String content;
 
-    // Board.java
-    public Board(User userId, String content) {
-        this.userId = userId;
-        this.content = content;
-    }
 }
