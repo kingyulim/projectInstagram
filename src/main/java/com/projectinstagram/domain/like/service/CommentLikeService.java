@@ -27,7 +27,7 @@ public class CommentLikeService {
     public CreateResponse CreateCommentLike(Long commentId, Long userId/*필터로부터 받은 값(수정필요)*/) {
 
         if (userId == null) {throw new CustomException(NO_MEMBER_ID);}
-        if (commentId == null) {throw new CustomException(COMMENT_NOT_FOUND_EXCEPTION);}
+        if (commentId == null) {throw new CustomException(null);} /*COMMENT_NOT_FOUND_EXCEPTION로 변경필요*/
         CommentLikeId commentLikeId = new CommentLikeId(commentId, userId);
         boolean isLiked = commentLikeRepository.existsById(commentLikeId); //좋아요가 이미 눌려있는지 확인
 
@@ -35,7 +35,7 @@ public class CommentLikeService {
             commentLikeRepository.deleteById(commentLikeId); //좋아요가 이미 눌려있으면 좋아요 취소
         } else {
             Comment comment = commentRepository.findById(commentId).orElseThrow(
-                    () -> new CustomException(COMMENT_NOT_FOUND_EXCEPTION));
+                    () -> new CustomException(null)); /*COMMENT_NOT_FOUND_EXCEPTION로 변경필요*/
             User user = userRepository.findById(userId).orElseThrow(
                     () -> new CustomException(NO_MEMBER_ID));
             CommentLike commentLike = new CommentLike(comment, user);
