@@ -28,6 +28,7 @@ public class CommentLike {
 
 
     public CommentLike(Comment comment, User user) {
+        this.id = new CommentLikeId(comment.getId(), user.getId());
         this.comment = comment;
         this.user = user;
     }

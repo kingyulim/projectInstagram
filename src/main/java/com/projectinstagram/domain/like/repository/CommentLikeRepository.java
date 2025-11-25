@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommentLikeRepository extends JpaRepository<CommentLike, CommentLikeId> {
-    Long countByCommentIdComment(Long commentId);
+    long countByComment_Id(Long commentId);
 }

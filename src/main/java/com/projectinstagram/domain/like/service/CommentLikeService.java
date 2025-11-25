@@ -6,13 +6,12 @@ import com.projectinstagram.domain.like.dto.CreateResponse;
 import com.projectinstagram.domain.like.entity.CommentLike;
 import com.projectinstagram.domain.like.entity.CommentLikeId;
 import com.projectinstagram.domain.like.repository.CommentLikeRepository;
-import com.projectinstagram.domain.like.repository.CommentRepository;
-import com.projectinstagram.domain.like.repository.UserRepository;
+import com.projectinstagram.domain.like.deletion.CommentRepository;
+import com.projectinstagram.domain.like.deletion.UserRepository;
 import com.projectinstagram.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.projectinstagram.common.exception.ExceptionMessageEnum.COMMENT_NOT_FOUND_EXCEPTION;
 import static com.projectinstagram.common.exception.ExceptionMessageEnum.NO_MEMBER_ID;
 
 @Service
@@ -42,7 +41,7 @@ public class CommentLikeService {
             commentLikeRepository.save(commentLike); //좋아요가 안눌려있으면 좋아요 생성
         }
 
-        Long likeCount = commentLikeRepository.countByCommentIdComment(commentId); //선택된 댓글의 좋아요 수 반환
+        Long likeCount = commentLikeRepository.countByComment_Id(commentId); //선택된 댓글의 좋아요 수 반환
 
         return new CreateResponse(likeCount);
     }

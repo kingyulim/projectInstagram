@@ -1,4 +1,4 @@
-package com.projectinstagram.domain.like.repository;
+package com.projectinstagram.domain.like.deletion;
 
 import com.projectinstagram.domain.comment.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;

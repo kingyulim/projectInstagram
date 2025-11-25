@@ -5,10 +5,7 @@ import com.projectinstagram.domain.like.service.CommentLikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +16,7 @@ public class CommentLikeController {
 
     //좋아요 - 댓글
     @PostMapping("/likes")
-    public ResponseEntity<CreateResponse> CreateCommentLike(@PathVariable Long commentId, Long userId/*추후 토큰에서 입력하는것으로 변경*/) {
+    public ResponseEntity<CreateResponse> CreateCommentLike(@PathVariable Long commentId, @RequestParam Long userId/*추후 토큰에서 입력하는것으로 변경*/) {
         return ResponseEntity.status(HttpStatus.OK).body(commentLikeService.CreateCommentLike(commentId, userId));
     }
 
