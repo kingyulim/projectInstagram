@@ -18,7 +18,7 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-/*
+
         // 유저 준비
         User user1 = new User("test@email.com", "test_id", "김테스트","1234");
         User user2 = new User("test@email.com2", "test_id2", "김테스트2","1234");
@@ -34,7 +34,7 @@ public class DataInitializer implements CommandLineRunner {
         // 유저 생성
         userRepository.save(user1);
         userRepository.save(user2);
-*/
+
 
     }
 }

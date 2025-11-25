@@ -21,4 +21,11 @@ public class User extends BaseTimeEntity {
     private String introduce;
     private Boolean isDeletion;
     private String password;
+           public User (String email, String nickname, String name, String password) {
+            this.email = email;
+            this.nickname = nickname;
+            this.name = name;
+            this.password = password;
+        }
+
 }

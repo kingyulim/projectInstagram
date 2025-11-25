@@ -11,14 +11,21 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/follows")
+@RequestMapping("/follow")
 public class FriendController {
     private final FriendService friendService;
 
     //친구추가 (팔로우)
     @PostMapping
     public ResponseEntity<CreateResponse> follow(@RequestBody @Valid CreateRequest request, @RequestParam Long userIdFrom/*토큰에서 받는것으로 추후 수정*/) {
-        return ResponseEntity.status(HttpStatus.OK).body(friendService.createResponse(request, userIdFrom));
+        return ResponseEntity.status(HttpStatus.OK).body(friendService.follow(request, userIdFrom));
+    }
+
+    //친구삭제 (언팔로우)
+    @PostMapping("/unfollow")
+    public ResponseEntity<Void> unfollow(@RequestBody @Valid CreateRequest request, @RequestParam Long userIdFrom/*토큰에서 받는것으로 추후 수정*/) {
+        friendService.unfollow(request, userIdFrom);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }
