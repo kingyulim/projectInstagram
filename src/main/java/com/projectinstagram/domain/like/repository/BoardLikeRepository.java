@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BoardLikeRepository extends JpaRepository<BoardLike, BoardLikeId> {
-    long countByBoard_Id(Long commentId);
+    long countByBoard_Id(Long boardId);
 }

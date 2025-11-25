@@ -21,16 +21,11 @@ public class CommentLikeService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
 
-    //좋아요 - 댓글
-    //Q. API명세서 boardId 받았으나 필요없는듯 함.
+    //댓글 좋아요 생성,조회
     public CreateResponse CreateCommentLike(Long commentId, Long userId/*필터로부터 받은 값(수정필요)*/) {
 
-        if (userId == null) {
-            throw new CustomException(NO_MEMBER_ID);
-        }
-        if (commentId == null) {
-            throw new CustomException(null);
-        } /*COMMENT_NOT_FOUND_EXCEPTION로 변경필요*/
+        if (commentId == null) {throw new CustomException(null);} /*COMMENT_NOT_FOUND_EXCEPTION로 변경필요*/
+        if (userId == null) {throw new CustomException(NO_MEMBER_ID);}
         CommentLikeId commentLikeId = new CommentLikeId(commentId, userId);
         boolean isLiked = commentLikeRepository.existsById(commentLikeId); //좋아요가 이미 눌려있는지 확인
 
@@ -39,7 +34,7 @@ public class CommentLikeService {
         } else {
             Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(null)); /*COMMENT_NOT_FOUND_EXCEPTION로 변경필요*/
             User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(NO_MEMBER_ID));
-            if (comment.getUserId().equals(userId)) { //본인이 작성한 게시물과 댓글에 좋아요를 남길 수 없는 기능
+            if (comment.getUserId().getId().equals(userId)) { //본인이 작성한 게시물과 댓글에 좋아요를 남길 수 없는 기능 /*병합시 comment 엔티티의 user필드 명칭 변경되면 에러*/
              throw new CustomException(null); /*에러 추가: 본인이 작성한 게시물과 댓글에 좋아요를 남길 수 없습니다.*/
             } else {
                 CommentLike commentLike = new CommentLike(comment, user);

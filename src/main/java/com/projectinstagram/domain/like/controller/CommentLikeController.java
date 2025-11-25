@@ -14,7 +14,7 @@ public class CommentLikeController {
 
     private final CommentLikeService commentLikeService;
 
-    //좋아요 - 댓글
+    //댓글 좋아요 생성,조회
     @PostMapping("/likes")
     public ResponseEntity<CreateResponse> CreateCommentLike(@PathVariable Long commentId, @RequestParam Long userId/*추후 토큰에서 입력하는것으로 변경*/) {
         return ResponseEntity.status(HttpStatus.OK).body(commentLikeService.CreateCommentLike(commentId, userId));
