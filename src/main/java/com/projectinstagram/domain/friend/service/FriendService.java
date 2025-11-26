@@ -72,6 +72,7 @@ public class FriendService {
     //endregion
 
     //region 팔로워 리스트 조회
+    @Transactional(readOnly = true)
     public List<ReadUserResponse> getFollowerList(Long userId) {
         List<Friend> followerList = friendRepository.findByIdUserIdTo(userId); // 팔로워 : userId가 userIdTo에 등록되어있음
         return convertFollowerListToReadUserResponseList(followerList);
@@ -99,14 +100,15 @@ public class FriendService {
     //endregion
 
     //region 팔로잉 리스트 조회
+    @Transactional(readOnly = true)
     public List<ReadUserResponse> getFollowingList(Long userId) {
         List<Friend> followingList = friendRepository.findByIdUserIdFrom(userId); // 팔로잉 : userId가 userIdFrom에 등록되어있음
-        return convertFolloingListToReadUserResponseList(followingList);
+        return convertFollowingListToReadUserResponseList(followingList);
     }
     //endregion
 
     //region 팔로잉 List<Friend>를 List<ReadUserResponse>로 변환매서드
-    private List<ReadUserResponse> convertFolloingListToReadUserResponseList(List<Friend> followingList) {
+    private List<ReadUserResponse> convertFollowingListToReadUserResponseList(List<Friend> followingList) {
         List<ReadUserResponse> followingUserList = new ArrayList<>();
 
         for (Friend friend : followingList) {
@@ -126,6 +128,7 @@ public class FriendService {
     //endregion
 
     //region 팔로워,팔로잉 수 조회
+    @Transactional(readOnly = true)
     public ReadCountResponse getFollowCount(Long userId) {
         List<Friend> followList = friendRepository.findByIdUserIdFromOrIdUserIdTo(userId, userId);
         Long followerCount = followList.stream().filter(Friend -> Friend.getUserTo().getId().equals(userId)).count();
@@ -135,13 +138,14 @@ public class FriendService {
     //endregion
 
     //region 팔로워,팔로잉 수 및 리스트 조회
+    @Transactional(readOnly = true)
     public ReadCountAndUserResponse getFollowCountList(Long userId) {
         List<Friend> followList = friendRepository.findByIdUserIdFromOrIdUserIdTo(userId, userId); //userId의 팔로워 + 팔로잉 리스트
 
         List<Friend> followerList = followList.stream().filter(Friend -> Friend.getUserTo().getId().equals(userId)).toList();
         List<ReadUserResponse> followerUserList = convertFollowerListToReadUserResponseList(followerList); //팔로워 리스트 필터
         List<Friend> followingList = followList.stream().filter(friend -> friend.getUserFrom().getId().equals(userId)).toList();
-        List<ReadUserResponse> followingUserList = convertFolloingListToReadUserResponseList(followingList); //팔로잉 리스트 필터
+        List<ReadUserResponse> followingUserList = convertFollowingListToReadUserResponseList(followingList); //팔로잉 리스트 필터
 
         Long followerCount = (long) followerList.size(); //팔로워 수
         Long followingCount = (long) followingList.size(); //팔로잉 수
