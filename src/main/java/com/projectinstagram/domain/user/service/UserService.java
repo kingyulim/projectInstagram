@@ -3,11 +3,11 @@ package com.projectinstagram.domain.user.service;
 import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.common.exception.ExceptionMessageEnum;
 import com.projectinstagram.common.util.PasswordEncoder;
-import com.projectinstagram.domain.user.dto.request.DeleteUserRequest;
-import com.projectinstagram.domain.user.dto.request.JoinUserRequest;
-import com.projectinstagram.domain.user.dto.request.AcountUserRequest;
+import com.projectinstagram.domain.user.dto.request.*;
 import com.projectinstagram.domain.user.dto.response.JoinUserResponse;
 import com.projectinstagram.domain.user.dto.response.LoginUserResponse;
+import com.projectinstagram.domain.user.dto.response.ModifiedUserResponse;
+import com.projectinstagram.domain.user.dto.response.ProfileViewResponse;
 import com.projectinstagram.domain.user.entity.User;
 import com.projectinstagram.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -114,5 +114,94 @@ public class UserService {
         }
 
         user.userDelete(true);
+    }
+
+    /**
+     * 프로필 조회 비지니스 로직 처리
+     * @param userId 회원 고유 번호
+     * @return ProfileViewResponse 데이터 반환
+     */
+    public ProfileViewResponse profileView(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(
+                        () -> new CustomException(ExceptionMessageEnum.NO_MEMBER_ID)
+                );
+
+        if (user.getIsDeletion() == true) {
+            throw new CustomException(ExceptionMessageEnum.IS_DELETION_USER);
+        }
+
+        return new ProfileViewResponse(
+                user.getId(),
+                user.getNickname(),
+                user.getName(),
+                user.getIntroduce(),
+                user.getProfileImage(),
+                user.getCreatedAt(),
+                user.getModifiedAt()
+        );
+    }
+
+    /**
+     * 프로필 업데이트 비지니스 로직 처리
+     * @param userId 회원 고유 번호
+     * @param request 입력 파라미터
+     * @return ModifiedUserResponse 데이터 반환
+     */
+    public ModifiedUserResponse modifiedUser(Long userId, ModifiedUserRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(
+                        () -> new CustomException(ExceptionMessageEnum.NO_MEMBER_ID)
+                );
+
+        if (user.getIsDeletion() == true) {
+            throw new CustomException(ExceptionMessageEnum.IS_DELETION_USER);
+        }
+
+        user.userModified(
+                request.getEmail(),
+                request.getNickname(),
+                request.getName(),
+                request.getIntroduce(),
+                request.getProfileImg()
+        );
+
+        return new ModifiedUserResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getNickname(),
+                user.getName(),
+                user.getProfileImage(),
+                user.getIntroduce(),
+                user.getCreatedAt(),
+                user.getModifiedAt()
+        );
+    }
+
+    /**
+     * 비밀번호 변경 비지니스 로직
+     * @param userId 회원 고유 번호
+     * @param request 입력값 파라미터
+     */
+    public void passwordModified(Long userId, PasswordChangeRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(
+                        () -> new CustomException(ExceptionMessageEnum.NO_MEMBER_ID)
+                );
+
+        if (user.getIsDeletion()) {
+            throw new CustomException(ExceptionMessageEnum.IS_DELETION_USER);
+        }
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new CustomException(ExceptionMessageEnum.INVALID_MEMBER_INFO);
+        }
+
+        if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+            throw new CustomException(ExceptionMessageEnum.DUPLICATE_DATA_EXCEPTION);
+        }
+
+        String encoded = passwordEncoder.encode(request.getNewPassword());
+        user.passwordChange(encoded);
     }
 }
