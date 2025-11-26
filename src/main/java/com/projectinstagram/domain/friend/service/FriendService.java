@@ -2,10 +2,7 @@ package com.projectinstagram.domain.friend.service;
 
 import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.domain.friend.deletion.UserRepository;
-import com.projectinstagram.domain.friend.dto.CreateRequest;
-import com.projectinstagram.domain.friend.dto.CreateResponse;
-import com.projectinstagram.domain.friend.dto.ReadCountResponse;
-import com.projectinstagram.domain.friend.dto.ReadUserResponse;
+import com.projectinstagram.domain.friend.dto.*;
 import com.projectinstagram.domain.friend.entity.Friend;
 import com.projectinstagram.domain.friend.entity.FriendId;
 import com.projectinstagram.domain.friend.repository.FriendRepository;
@@ -30,7 +27,7 @@ public class FriendService {
     private final FriendRepository friendRepository;
     private final UserRepository userRepository;
 
-    //공통정보 준비용 필드
+    //팔로우 언팔로우 공통정보 준비필드
     @Getter
     @AllArgsConstructor
     private static class FriendInfo {
@@ -48,7 +45,6 @@ public class FriendService {
 
         User userTo = userRepository.findById(userIdTo).orElseThrow(() -> new CustomException(NO_MEMBER_ID));
         User userFrom = userRepository.findById(userIdFrom).orElseThrow(() -> new CustomException(NO_MEMBER_ID));
-        Friend friend = new Friend(userFrom, userTo); //Friend 인스턴스 생성
 
         FriendId friendId = new FriendId(userIdFrom, userIdTo);
         boolean isFriended = friendRepository.existsById(friendId);//이미 친구인지 확인 후 boolean을 return값에 전달
@@ -60,7 +56,7 @@ public class FriendService {
     //region 친구추가 (팔로우)
     public CreateResponse follow (CreateRequest request, Long userIdFrom/*토큰으로부터 받은 값(수정필요)*/) {
         FriendInfo friendinfo = prepareFriendInfo(request, userIdFrom);
-        if (friendinfo.isFriended == true) {throw new CustomException(ALREADY_FRIEND_EXCEPTION);} //이미 친구인지 확인
+        if (friendinfo.isFriended) {throw new CustomException(ALREADY_FRIEND_EXCEPTION);} //이미 친구인지 확인
         Friend friend = new Friend(friendinfo.getUserFrom(), friendinfo.getUserTo());
         friendRepository.save(friend);
         return new CreateResponse(userIdFrom); /*토큰값으로부터 Long으로 변환필요*/
@@ -70,7 +66,7 @@ public class FriendService {
     //region 친구삭제 (언팔로우)
     public void unfollow(CreateRequest request, Long userIdFrom/*토큰으로부터 받은 값(수정필요)*/) {
         FriendInfo friendinfo = prepareFriendInfo(request, userIdFrom);
-        if (friendinfo.isFriended == false) {throw new CustomException(NOT_FRIEND_EXCEPTION);} //친구가 아닌지 확인
+        if (!friendinfo.isFriended) {throw new CustomException(NOT_FRIEND_EXCEPTION);} //친구가 아닌지 확인
         friendRepository.deleteById(friendinfo.friendId);
     }
     //endregion
@@ -78,6 +74,12 @@ public class FriendService {
     //region 팔로워 리스트 조회
     public List<ReadUserResponse> getFollowerList(Long userId) {
         List<Friend> followerList = friendRepository.findByIdUserIdTo(userId); // 팔로워 : userId가 userIdTo에 등록되어있음
+        return convertFollowerListToReadUserResponseList(followerList);
+    }
+    //endregion
+
+    //region 팔로워 List<Friend>를 List<ReadUserResponse>로 변환매서드
+    private List<ReadUserResponse> convertFollowerListToReadUserResponseList(List<Friend> followerList) {
         List<ReadUserResponse> followerUserList = new ArrayList<>();
 
         for (Friend friend : followerList) {
@@ -99,6 +101,12 @@ public class FriendService {
     //region 팔로잉 리스트 조회
     public List<ReadUserResponse> getFollowingList(Long userId) {
         List<Friend> followingList = friendRepository.findByIdUserIdFrom(userId); // 팔로잉 : userId가 userIdFrom에 등록되어있음
+        return convertFolloingListToReadUserResponseList(followingList);
+    }
+    //endregion
+
+    //region 팔로잉 List<Friend>를 List<ReadUserResponse>로 변환매서드
+    private List<ReadUserResponse> convertFolloingListToReadUserResponseList(List<Friend> followingList) {
         List<ReadUserResponse> followingUserList = new ArrayList<>();
 
         for (Friend friend : followingList) {
@@ -120,13 +128,25 @@ public class FriendService {
     //region 팔로워,팔로잉 수 조회
     public ReadCountResponse getFollowCount(Long userId) {
         List<Friend> followList = friendRepository.findByIdUserIdFromOrIdUserIdTo(userId, userId);
-        Long followerCount = followList.stream().
-                filter(Friend -> Friend.getUserTo().getId().equals(userId))
-                .count();
-        Long followingCount = followList.stream()
-                .filter(friend -> friend.getUserFrom().getId().equals(userId))
-                .count();
+        Long followerCount = followList.stream().filter(Friend -> Friend.getUserTo().getId().equals(userId)).count();
+        Long followingCount = followList.stream().filter(friend -> friend.getUserFrom().getId().equals(userId)).count();
         return new ReadCountResponse(followerCount, followingCount);
+    }
+    //endregion
+
+    //region 팔로워,팔로잉 수 및 리스트 조회
+    public ReadCountAndUserResponse getFollowCountList(Long userId) {
+        List<Friend> followList = friendRepository.findByIdUserIdFromOrIdUserIdTo(userId, userId); //userId의 팔로워 + 팔로잉 리스트
+
+        List<Friend> followerList = followList.stream().filter(Friend -> Friend.getUserTo().getId().equals(userId)).toList();
+        List<ReadUserResponse> followerUserList = convertFollowerListToReadUserResponseList(followerList); //팔로워 리스트 필터
+        List<Friend> followingList = followList.stream().filter(friend -> friend.getUserFrom().getId().equals(userId)).toList();
+        List<ReadUserResponse> followingUserList = convertFolloingListToReadUserResponseList(followingList); //팔로잉 리스트 필터
+
+        Long followerCount = (long) followerList.size(); //팔로워 수
+        Long followingCount = (long) followingList.size(); //팔로잉 수
+
+        return new ReadCountAndUserResponse(followerCount, followingCount, followerUserList, followingUserList);
     }
     //endregion
 

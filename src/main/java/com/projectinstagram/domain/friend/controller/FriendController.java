@@ -1,9 +1,6 @@
 package com.projectinstagram.domain.friend.controller;
 
-import com.projectinstagram.domain.friend.dto.CreateRequest;
-import com.projectinstagram.domain.friend.dto.CreateResponse;
-import com.projectinstagram.domain.friend.dto.ReadCountResponse;
-import com.projectinstagram.domain.friend.dto.ReadUserResponse;
+import com.projectinstagram.domain.friend.dto.*;
 import com.projectinstagram.domain.friend.service.FriendService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +45,12 @@ public class FriendController {
     @GetMapping("/count/{userId}")
     public ResponseEntity<ReadCountResponse> getFollowCount(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(friendService.getFollowCount(userId));
+    }
+
+    //팔로워,팔로잉 수 및 리스트 조회
+    @GetMapping("/list/{userId}")
+    public ResponseEntity<ReadCountAndUserResponse> getFollowCountList(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(friendService.getFollowCountList(userId));
     }
 
 }
