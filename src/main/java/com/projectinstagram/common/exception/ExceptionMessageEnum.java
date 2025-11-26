@@ -15,7 +15,8 @@ public enum ExceptionMessageEnum {
     BOARD_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, "해당 게시물은 존재하지 않습니다."),
     POST_ACCESS_DENIED_EXCEPTION(HttpStatus.UNAUTHORIZED, "접근 불가능한 게시물입니다."),
     PATTERN_VALIDATION_FAILED_EXCEPTION(HttpStatus.BAD_REQUEST, "입력 값이 허용된 형식(정규식)에 맞지 않습니다."),
-    DUPLICATE_DATA_EXCEPTION(HttpStatus.CONFLICT, "이미 존재하는 데이터 입니다")
+    DUPLICATE_DATA_EXCEPTION(HttpStatus.CONFLICT, "이미 존재하는 데이터 입니다"),
+    FAILED_DELETE_FILE(HttpStatus.BAD_REQUEST, "잘못된 요청값 입니다.")
     ;
 
     private final HttpStatus status;
