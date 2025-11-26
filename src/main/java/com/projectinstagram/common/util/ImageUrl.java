@@ -7,8 +7,8 @@ import lombok.Getter;
  * 사용할 디렉토리 명만 지정해서 사용.
  */
 public enum ImageUrl {
-    BOARD_URL("boardImages"),
-    USER_URL("");
+    BOARD_URL("file/BoardImg"),
+    USER_URL("file/profileImg");
     @Getter
     private final String url;
 

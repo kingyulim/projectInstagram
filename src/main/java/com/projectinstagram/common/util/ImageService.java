@@ -49,14 +49,13 @@ public class ImageService {
     }
 
     //삭제
-    public boolean delete(ImageUrl url, String fileName){
+    public boolean delete(ImageUrl url, String fileName) {
         Path filePath = buildFilePath(url, fileName);
         try {
             return Files.deleteIfExists(filePath);
         } catch (IOException e) {
             throw new CustomException(ExceptionMessageEnum.FAILED_DELETE_FILE);
         }
-
     }
 
     //리스트용
@@ -72,7 +71,6 @@ public class ImageService {
     public List<Boolean> deleteAll(ImageUrl url, String[] files) {
         return deleteAll(url, Arrays.asList(files));
     }
-
 
 
     //파일명 겹치지 않도록 고유값을 추가하여 파일명 지정.
