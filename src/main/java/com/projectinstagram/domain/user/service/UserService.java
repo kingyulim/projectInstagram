@@ -2,10 +2,10 @@ package com.projectinstagram.domain.user.service;
 
 import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.common.exception.ExceptionMessageEnum;
-import com.projectinstagram.common.jwt.JwtUtil;
 import com.projectinstagram.common.util.PasswordEncoder;
+import com.projectinstagram.domain.user.dto.request.DeleteUserRequest;
 import com.projectinstagram.domain.user.dto.request.JoinUserRequest;
-import com.projectinstagram.domain.user.dto.request.LoginUserRequest;
+import com.projectinstagram.domain.user.dto.request.AcountUserRequest;
 import com.projectinstagram.domain.user.dto.response.JoinUserResponse;
 import com.projectinstagram.domain.user.dto.response.LoginUserResponse;
 import com.projectinstagram.domain.user.entity.User;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
 
     /**
      * 회원가입 비니지스 로직 처리
@@ -73,18 +72,20 @@ public class UserService {
      * @param request 로그인 입력값 파라미터
      * @return UserLoginResponseDto 데이터 반환
      */
-    public LoginUserResponse login(LoginUserRequest request) {
+    public LoginUserResponse login(AcountUserRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(
                         () -> new CustomException(ExceptionMessageEnum.NO_MEMBER_INFO)
                 );
 
+        if (user.getIsDeletion() == true) {
+            throw new CustomException(ExceptionMessageEnum.IS_DELETION_USER);
+        }
+
         boolean passwordMatches = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if (!passwordMatches) {
             throw new CustomException(ExceptionMessageEnum.INVALID_MEMBER_INFO);
         }
-
-        String token = jwtUtil.generateToken(user.getId());
 
         return new LoginUserResponse(
                 user.getId(),
@@ -93,8 +94,25 @@ public class UserService {
                 user.getProfileImage(),
                 user.getIntroduce(),
                 user.getCreatedAt(),
-                user.getModifiedAt(),
-                token
+                user.getModifiedAt()
         );
+    }
+
+    /**
+     * 회원 탈퇴 비지니스 로직 처리
+     * @param userId 회원 고유 번호
+     * @param request 입력값 파라미터
+     */
+    public void userDelete(Long userId, DeleteUserRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(
+                        () -> new CustomException(ExceptionMessageEnum.NO_MEMBER_ID)
+                );
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new CustomException(ExceptionMessageEnum.NO_MEMBER_INFO);
+        }
+
+        user.userDelete(true);
     }
 }

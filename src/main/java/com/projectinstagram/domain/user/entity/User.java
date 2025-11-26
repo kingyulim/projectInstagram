@@ -48,4 +48,12 @@ public class User extends BaseTimeEntity {
         this.nickname = nickname;
 
     }
+
+    /**
+     * 탈퇴회원 메서드
+     * @param isDeletion 탈퇴 상태 파라미터
+     */
+    public void userDelete(Boolean isDeletion) {
+        this.isDeletion = isDeletion;
+    }
 }

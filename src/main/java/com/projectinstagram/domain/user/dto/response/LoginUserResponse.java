@@ -15,5 +15,4 @@ public class LoginUserResponse {
     private final String introduce;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
-    private final String token;
 }
