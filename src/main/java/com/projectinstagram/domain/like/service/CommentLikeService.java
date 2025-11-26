@@ -6,16 +6,16 @@ import com.projectinstagram.domain.like.dto.CreateResponse;
 import com.projectinstagram.domain.like.entity.CommentLike;
 import com.projectinstagram.domain.like.entity.CommentLikeId;
 import com.projectinstagram.domain.like.repository.CommentLikeRepository;
-import com.projectinstagram.domain.like.deletion.CommentRepository;
-import com.projectinstagram.domain.like.deletion.UserRepository;
 import com.projectinstagram.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.projectinstagram.common.exception.ExceptionMessageEnum.NO_MEMBER_ID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CommentLikeService {
     private final CommentLikeRepository commentLikeRepository;
     private final CommentRepository commentRepository;
@@ -24,7 +24,7 @@ public class CommentLikeService {
     //댓글 좋아요 생성,조회
     public CreateResponse CreateCommentLike(Long commentId, Long userId/*필터로부터 받은 값(수정필요)*/) {
 
-        if (commentId == null) {throw new CustomException(null);} /*COMMENT_NOT_FOUND_EXCEPTION로 변경필요*/
+        if (commentId == null) {throw new CustomException(COMMENT_NOT_FOUND_EXCEPTION);} /*COMMENT_NOT_FOUND_EXCEPTION로 연동 필요*/
         if (userId == null) {throw new CustomException(NO_MEMBER_ID);}
         CommentLikeId commentLikeId = new CommentLikeId(commentId, userId);
         boolean isLiked = commentLikeRepository.existsById(commentLikeId); //좋아요가 이미 눌려있는지 확인
@@ -32,7 +32,7 @@ public class CommentLikeService {
         if (isLiked == true) {
             commentLikeRepository.deleteById(commentLikeId); //좋아요가 이미 눌려있으면 좋아요 취소
         } else {
-            Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(null)); /*COMMENT_NOT_FOUND_EXCEPTION로 변경필요*/
+            Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND_EXCEPTION)); /*COMMENT_NOT_FOUND_EXCEPTION로 변경필요*/
             User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(NO_MEMBER_ID));
             if (comment.getUserId().getId().equals(userId)) { //본인이 작성한 게시물과 댓글에 좋아요를 남길 수 없는 기능 /*병합시 comment 엔티티의 user필드 명칭 변경되면 에러*/
              throw new CustomException(null); /*에러 추가: 본인이 작성한 게시물과 댓글에 좋아요를 남길 수 없습니다.*/
