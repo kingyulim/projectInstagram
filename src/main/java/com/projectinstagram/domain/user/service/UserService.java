@@ -5,7 +5,7 @@ import com.projectinstagram.common.exception.ExceptionMessageEnum;
 import com.projectinstagram.common.jwt.JwtUtil;
 import com.projectinstagram.common.util.PasswordEncoder;
 import com.projectinstagram.domain.user.dto.request.JoinUserRequest;
-import com.projectinstagram.domain.user.dto.request.LoginUserRequest;
+import com.projectinstagram.domain.user.dto.request.AcountUserRequest;
 import com.projectinstagram.domain.user.dto.response.JoinUserResponse;
 import com.projectinstagram.domain.user.dto.response.LoginUserResponse;
 import com.projectinstagram.domain.user.entity.User;
@@ -73,7 +73,7 @@ public class UserService {
      * @param request 로그인 입력값 파라미터
      * @return UserLoginResponseDto 데이터 반환
      */
-    public LoginUserResponse login(LoginUserRequest request) {
+    public LoginUserResponse login(AcountUserRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(
                         () -> new CustomException(ExceptionMessageEnum.NO_MEMBER_INFO)
@@ -97,4 +97,6 @@ public class UserService {
                 token
         );
     }
+
+
 }

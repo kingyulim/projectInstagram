@@ -1,7 +1,7 @@
 package com.projectinstagram.domain.user.controller;
 
 import com.projectinstagram.domain.user.dto.request.JoinUserRequest;
-import com.projectinstagram.domain.user.dto.request.LoginUserRequest;
+import com.projectinstagram.domain.user.dto.request.AcountUserRequest;
 import com.projectinstagram.domain.user.dto.response.JoinUserResponse;
 import com.projectinstagram.domain.user.dto.response.LoginUserResponse;
 import com.projectinstagram.domain.user.service.UserService;
@@ -34,7 +34,7 @@ public class UserController {
      * @return UserLoginResponseDto json 반환
      */
     @PostMapping("/login")
-    public ResponseEntity<LoginUserResponse> login(@Valid @RequestBody LoginUserRequest request) {
+    public ResponseEntity<LoginUserResponse> login(@Valid @RequestBody AcountUserRequest request) {
 
         return ResponseEntity.status(HttpStatus.OK).body(userService.login(request));
     }
