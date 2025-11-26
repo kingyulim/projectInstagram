@@ -1,5 +1,6 @@
-package com.projectinstagram.domain.board.entity;
+package com.projectinstagram.domain.like.entity;
 
+import com.projectinstagram.domain.board.entity.Board;
 import com.projectinstagram.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
