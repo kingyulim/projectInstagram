@@ -1,5 +1,7 @@
 package com.projectinstagram.domain.comment.service;
 
+import com.projectinstagram.common.exception.CustomException;
+import com.projectinstagram.common.exception.ExceptionMessageEnum;
 import com.projectinstagram.domain.board.entity.Board;
 import com.projectinstagram.domain.comment.dto.*;
 import com.projectinstagram.domain.comment.entity.Comment;
@@ -23,10 +25,11 @@ public class CommentService {
     @Transactional
     public CreateCommentResponse save(Long boardId, Long userId, CreateCommentRequest request) {
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("게시물 없음"));
+                .orElseThrow(() -> new CustomException(ExceptionMessageEnum.BOARD_NOT_FOUND_EXCEPTION));
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
+                .orElseThrow(() -> new CustomException(ExceptionMessageEnum.NO_MEMBER_ID));
+
 
         Comment comment = new Comment(board, user, request.getContent());
         commentRepository.save(comment);
@@ -38,7 +41,7 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<GetCommentResponse> getAll(Long boardId) {
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("게시물 없음"));
+                .orElseThrow(() -> new CustomException(ExceptionMessageEnum.BOARD_NOT_FOUND_EXCEPTION));
 
         List<Comment> comments = commentRepository.findByBoardId(board);
         return comments.stream()
@@ -56,7 +59,7 @@ public class CommentService {
     // 댓글수정
     @Transactional
     public UpdateCommentResponse update(Long commentId, UpdateCommentRequest request) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("없는 댓글입니다."));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ExceptionMessageEnum.COMMENT_NOT_FOUND));
         comment.update(request.getContent());
         return new UpdateCommentResponse(comment.getId(), comment.getUserId().getId(), comment.getBoardId().getId(), comment.getContent(), comment.getCreatedAt(), comment.getModifiedAt());
     }
@@ -65,7 +68,7 @@ public class CommentService {
     public void delete(Long commentId) {
         boolean existence = commentRepository.existsById(commentId);
         if (!existence) {
-            throw new IllegalStateException("없는 댓글입니다");
+            throw new CustomException(ExceptionMessageEnum.COMMENT_NOT_FOUND);
         }
         commentRepository.deleteById(commentId);
     }
