@@ -2,6 +2,7 @@ package com.projectinstagram.domain.user.controller;
 
 import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.common.exception.ExceptionMessageEnum;
+import com.projectinstagram.domain.user.dto.request.DeleteUserRequest;
 import com.projectinstagram.domain.user.dto.request.JoinUserRequest;
 import com.projectinstagram.domain.user.dto.request.AcountUserRequest;
 import com.projectinstagram.domain.user.dto.response.JoinUserResponse;
@@ -13,9 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,7 +47,7 @@ public class UserController {
          * thisSession 세션 없으면 예외처리
          */
         if (thisSession != null) {
-            throw new CustomException(ExceptionMessageEnum.LOGIN_CHECK);
+            throw new CustomException(ExceptionMessageEnum.SESSION_CHECK);
         }
 
         LoginUserResponse loginUserResponse = userService.login(request);
@@ -65,5 +64,32 @@ public class UserController {
         session.setAttribute("thisSession", sessionResponse);
 
         return ResponseEntity.status(HttpStatus.OK).body(loginUserResponse);
+    }
+
+    /**
+     * 회원 탈퇴 요청 검증
+     * @param userId 회원 고유 번호
+     * @return
+     */
+    @PostMapping("/users/delete/{userId}")
+    public ResponseEntity<Void> userDelete(
+            @PathVariable Long userId,
+            @Valid @RequestBody DeleteUserRequest request,
+            HttpSession session
+    ) {
+        SessionResponse thisSession = (SessionResponse) session.getAttribute("thisSession");
+
+        if (thisSession == null) {
+            throw new CustomException(ExceptionMessageEnum.LOGIN_CHECK);
+        }
+
+        userService.userDelete(userId, request);
+
+        /**
+         * 세션 제거
+         */
+        session.invalidate();
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
