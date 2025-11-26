@@ -1,5 +1,6 @@
 package com.projectinstagram.domain.user.dto.request;
 
+import com.projectinstagram.common.regexp.RegEXP;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -19,7 +20,7 @@ public class JoinUserRequest {
             message = "이름은 1 ~ 20자 로 입력해주세요."
     )
     @Pattern(
-            regexp = "^[가-힣a-zA-Z]+$",
+            regexp = RegEXP.NAME,
             message = "이름 형식이 아닙니다."
     )
     private String name;
@@ -31,7 +32,7 @@ public class JoinUserRequest {
             message = "비밀번호는 1 ~ 20자 로 입력해주세요."
     )
     @Pattern(
-            regexp = "^[A-Za-z0-9!@#$%]+$",
+            regexp = RegEXP.PASSWORD,
             message = "비밀번호 형식이 아닙니다."
     )
     private String password;
@@ -41,6 +42,6 @@ public class JoinUserRequest {
             min = 1,
             max = 20
     )
-    @Pattern(regexp = "^[A-Za-z0-9](?:[A-Za-z0-9._]*[A-Za-z0-9])$")
+    @Pattern(regexp = RegEXP.NICKNAME)
     private String nickname;
 }
