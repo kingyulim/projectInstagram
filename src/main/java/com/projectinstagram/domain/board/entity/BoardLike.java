@@ -12,14 +12,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoardLike {
     //복합키 넣을 예정
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private BoardLikeId id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @MapsId("boardId")
     @JoinColumn(name="board_id")
     private Board boardId;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @MapsId("userId")
     @JoinColumn(name="user_id")
     private User userId;
 }
