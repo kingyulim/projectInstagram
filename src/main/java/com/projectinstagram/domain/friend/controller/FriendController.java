@@ -2,7 +2,8 @@ package com.projectinstagram.domain.friend.controller;
 
 import com.projectinstagram.domain.friend.dto.CreateRequest;
 import com.projectinstagram.domain.friend.dto.CreateResponse;
-import com.projectinstagram.domain.friend.dto.ReadResponse;
+import com.projectinstagram.domain.friend.dto.ReadCountResponse;
+import com.projectinstagram.domain.friend.dto.ReadUserResponse;
 import com.projectinstagram.domain.friend.service.FriendService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,14 +34,20 @@ public class FriendController {
 
     //팔로워 리스트 조회
     @GetMapping("/follower/{userId}")
-    public ResponseEntity<List<ReadResponse>> getFollowerList (@PathVariable Long userId) {
+    public ResponseEntity<List<ReadUserResponse>> getFollowerList (@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(friendService.getFollowerList(userId));
     }
 
     //팔로잉 리스트 조회
     @GetMapping("/following/{userId}")
-    public ResponseEntity<List<ReadResponse>> getFollowingList(@PathVariable Long userId) {
+    public ResponseEntity<List<ReadUserResponse>> getFollowingList(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(friendService.getFollowingList(userId));
+    }
+
+    //팔로워,팔로잉 수 조회
+    @GetMapping("/count/{userId}")
+    public ResponseEntity<ReadCountResponse> getFollowCount(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(friendService.getFollowCount(userId));
     }
 
 }

@@ -4,7 +4,8 @@ import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.domain.friend.deletion.UserRepository;
 import com.projectinstagram.domain.friend.dto.CreateRequest;
 import com.projectinstagram.domain.friend.dto.CreateResponse;
-import com.projectinstagram.domain.friend.dto.ReadResponse;
+import com.projectinstagram.domain.friend.dto.ReadCountResponse;
+import com.projectinstagram.domain.friend.dto.ReadUserResponse;
 import com.projectinstagram.domain.friend.entity.Friend;
 import com.projectinstagram.domain.friend.entity.FriendId;
 import com.projectinstagram.domain.friend.repository.FriendRepository;
@@ -16,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +29,6 @@ import static com.projectinstagram.common.exception.ExceptionMessageEnum.*;
 public class FriendService {
     private final FriendRepository friendRepository;
     private final UserRepository userRepository;
-
 
     //공통정보 준비용 필드
     @Getter
@@ -77,14 +76,14 @@ public class FriendService {
     //endregion
 
     //region 팔로워 리스트 조회
-    public List<ReadResponse> getFollowerList(Long userId) {
+    public List<ReadUserResponse> getFollowerList(Long userId) {
         List<Friend> followerList = friendRepository.findByIdUserIdTo(userId); // 팔로워 : userId가 userIdTo에 등록되어있음
-        List<ReadResponse> followerUserList = new ArrayList<>();
+        List<ReadUserResponse> followerUserList = new ArrayList<>();
 
         for (Friend friend : followerList) {
             User user = userRepository.findById(friend.getId().getUserIdFrom()) // 팔로워 : getUserIdFrom()
                     .orElseThrow(() -> new CustomException(NO_MEMBER_ID));
-            ReadResponse dto = new ReadResponse(
+            ReadUserResponse dto = new ReadUserResponse(
                     user.getId(),
                     user.getNickname(),
                     user.getName(),
@@ -98,14 +97,14 @@ public class FriendService {
     //endregion
 
     //region 팔로잉 리스트 조회
-    public List<ReadResponse> getFollowingList(Long userId) {
+    public List<ReadUserResponse> getFollowingList(Long userId) {
         List<Friend> followingList = friendRepository.findByIdUserIdFrom(userId); // 팔로잉 : userId가 userIdFrom에 등록되어있음
-        List<ReadResponse> followingUserList = new ArrayList<>();
+        List<ReadUserResponse> followingUserList = new ArrayList<>();
 
         for (Friend friend : followingList) {
             User user = userRepository.findById(friend.getId().getUserIdTo()) // 팔로잉 : getUserIdTo()
                     .orElseThrow(() -> new CustomException(NO_MEMBER_ID));
-            ReadResponse dto = new ReadResponse(
+            ReadUserResponse dto = new ReadUserResponse(
                     user.getId(),
                     user.getNickname(),
                     user.getName(),
@@ -115,6 +114,19 @@ public class FriendService {
             followingUserList.add(dto);
         }
         return followingUserList;
+    }
+    //endregion
+
+    //region 팔로워,팔로잉 수 조회
+    public ReadCountResponse getFollowCount(Long userId) {
+        List<Friend> followList = friendRepository.findByIdUserIdFromOrIdUserIdTo(userId, userId);
+        Long followerCount = followList.stream().
+                filter(Friend -> Friend.getUserTo().getId().equals(userId))
+                .count();
+        Long followingCount = followList.stream()
+                .filter(friend -> friend.getUserFrom().getId().equals(userId))
+                .count();
+        return new ReadCountResponse(followerCount, followingCount);
     }
     //endregion
 
