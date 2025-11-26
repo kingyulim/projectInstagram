@@ -23,6 +23,7 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name="user_id")
     private User userId;
 
+    @Column(nullable = false)
     private String content;
 
     public Comment(Board boardId, User userId, String content) {
