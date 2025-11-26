@@ -2,11 +2,12 @@ package com.projectinstagram.domain.user.service;
 
 import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.common.exception.ExceptionMessageEnum;
+import com.projectinstagram.common.jwt.JwtUtil;
 import com.projectinstagram.common.util.PasswordEncoder;
-import com.projectinstagram.domain.user.dto.request.UserJoinRequestDto;
-import com.projectinstagram.domain.user.dto.request.UserLoginRequestDto;
-import com.projectinstagram.domain.user.dto.response.UserJoinResponseDto;
-import com.projectinstagram.domain.user.dto.response.UserLoginResponseDto;
+import com.projectinstagram.domain.user.dto.request.JoinUserRequest;
+import com.projectinstagram.domain.user.dto.request.LoginUserRequest;
+import com.projectinstagram.domain.user.dto.response.JoinUserResponse;
+import com.projectinstagram.domain.user.dto.response.LoginUserResponse;
 import com.projectinstagram.domain.user.entity.User;
 import com.projectinstagram.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -19,13 +20,14 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     /**
      * 회원가입 비니지스 로직 처리
      * @param request 회원가입 입력 데이터 파라미터
      * @return UserJoinResponseDto 데이터 반환
      */
-    public UserJoinResponseDto join(UserJoinRequestDto request) {
+    public JoinUserResponse join(JoinUserRequest request) {
         User user = new User(
                 request.getEmail(),
                 request.getName(),
@@ -58,7 +60,7 @@ public class UserService {
 
         User joinedUser = userRepository.save(user);
 
-        return new UserJoinResponseDto(
+        return new JoinUserResponse(
                 joinedUser.getId(),
                 joinedUser.getEmail(),
                 joinedUser.getName(),
@@ -71,7 +73,7 @@ public class UserService {
      * @param request 로그인 입력값 파라미터
      * @return UserLoginResponseDto 데이터 반환
      */
-    public UserLoginResponseDto login(UserLoginRequestDto request) {
+    public LoginUserResponse login(LoginUserRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(
                         () -> new CustomException(ExceptionMessageEnum.NO_MEMBER_INFO)
@@ -82,14 +84,17 @@ public class UserService {
             throw new CustomException(ExceptionMessageEnum.INVALID_MEMBER_INFO);
         }
 
-        return new UserLoginResponseDto(
+        String token = jwtUtil.generateToken(user.getId());
+
+        return new LoginUserResponse(
                 user.getId(),
                 user.getNickname(),
                 user.getName(),
                 user.getProfileImage(),
                 user.getIntroduce(),
                 user.getCreatedAt(),
-                user.getModifiedAt()
+                user.getModifiedAt(),
+                token
         );
     }
 }

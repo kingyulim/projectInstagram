@@ -1,9 +1,9 @@
 package com.projectinstagram.domain.user.controller;
 
-import com.projectinstagram.domain.user.dto.request.UserJoinRequestDto;
-import com.projectinstagram.domain.user.dto.request.UserLoginRequestDto;
-import com.projectinstagram.domain.user.dto.response.UserJoinResponseDto;
-import com.projectinstagram.domain.user.dto.response.UserLoginResponseDto;
+import com.projectinstagram.domain.user.dto.request.JoinUserRequest;
+import com.projectinstagram.domain.user.dto.request.LoginUserRequest;
+import com.projectinstagram.domain.user.dto.response.JoinUserResponse;
+import com.projectinstagram.domain.user.dto.response.LoginUserResponse;
 import com.projectinstagram.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class UserController {
      * @return UserJoinResponseDto json 반환
      */
     @PostMapping("/join")
-    public ResponseEntity<UserJoinResponseDto> join(@Valid @RequestBody UserJoinRequestDto request) {
+    public ResponseEntity<JoinUserResponse> join(@Valid @RequestBody JoinUserRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.join(request));
     }
 
@@ -34,7 +34,8 @@ public class UserController {
      * @return UserLoginResponseDto json 반환
      */
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponseDto> login(@Valid @RequestBody UserLoginRequestDto request) {
+    public ResponseEntity<LoginUserResponse> login(@Valid @RequestBody LoginUserRequest request) {
+
         return ResponseEntity.status(HttpStatus.OK).body(userService.login(request));
     }
 }

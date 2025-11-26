@@ -51,6 +51,18 @@ public class JwtUtil {
                         .compact(); // JWT 토큰 생성
     }
 
+    // 회원 고유 번호 추출
+    public Long getUserIdFromToken(String token) {
+        return Long.valueOf(
+                Jwts.parserBuilder()
+                        .setSigningKey(key)
+                        .build()
+                        .parseClaimsJws(token)
+                        .getBody()
+                        .getSubject()
+        );
+    }
+
     // 이메일 추출
     public String getEmailFromToken(String token) {
         return Jwts.parserBuilder()
