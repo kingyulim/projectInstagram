@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ExceptionMessageEnum {
     NO_MEMBER_ID(HttpStatus.NOT_FOUND, "해당 ID의 회원을 찾을 수 없습니다."),
     NO_MEMBER_INFO(HttpStatus.NOT_FOUND, "해당 회원 정보를 찾을 수 없습니다."),
+    LOGIN_CHECK(HttpStatus.UNAUTHORIZED, "로그인이 되어있습니다."),
     INVALID_MEMBER_INFO(HttpStatus.BAD_REQUEST, "회원 정보가 일치하지 않습니다."),
     NO_LOGIN(HttpStatus.UNAUTHORIZED, "로그인이 되지 않았습니다."),
     BOARD_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, "해당 게시물은 존재하지 않습니다."),
