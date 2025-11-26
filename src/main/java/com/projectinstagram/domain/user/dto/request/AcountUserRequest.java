@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
-public class LoginUserRequest {
+public class AcountUserRequest {
     @NotBlank(message = "이메일이 입력 되지 않았습니다.")
     @Email
     private String email;
