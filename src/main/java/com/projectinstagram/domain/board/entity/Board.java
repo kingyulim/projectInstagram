@@ -2,13 +2,14 @@ package com.projectinstagram.domain.board.entity;
 
 import com.projectinstagram.common.entity.BaseTimeEntity;
 import com.projectinstagram.domain.board.dto.CreateBoardRequest;
-import com.projectinstagram.domain.board.dto.UpdateBoardRequest;
 import com.projectinstagram.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 
 @Getter
@@ -23,6 +24,8 @@ public class Board extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="user_id")
     private User userId;
+    @OneToMany(mappedBy = "board_id")
+    private List<BoardImage> iamges;
     private String content;
 
     public Board(User user, CreateBoardRequest request) {

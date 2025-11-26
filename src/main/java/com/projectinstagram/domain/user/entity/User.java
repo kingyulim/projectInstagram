@@ -14,11 +14,38 @@ public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(length = 50, nullable = false)
     private String email;
-    private String nickname;
+
+    @Column(length = 50, nullable = false)
     private String name;
-    private String profileImage;
-    private String introduce;
-    private Boolean isDeletion;
+
+    @Column(length = 250, nullable = false)
     private String password;
+
+    @Column(length = 50, nullable = false)
+    private String nickname;
+
+    @Column(columnDefinition = "text")
+    private String introduce;
+
+    @Column(length = 250)
+    private String profileImage;
+
+    @Column(nullable = false)
+    private Boolean isDeletion = false;
+
+    public User(
+            String email,
+            String name,
+            String password,
+            String nickname
+    ) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.nickname = nickname;
+
+    }
 }
