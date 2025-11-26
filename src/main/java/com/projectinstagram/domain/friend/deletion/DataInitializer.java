@@ -22,6 +22,7 @@ public class DataInitializer implements CommandLineRunner {
         // 유저 준비
         User user1 = new User("test@email.com", "test_id", "김테스트","1234");
         User user2 = new User("test@email.com2", "test_id2", "김테스트2","1234");
+        User user3 = new User("test@email.com3", "test_id3", "김테스트3","1234");
 
 //       public User (String email, String nickname, String name, String password) {
 //            this.email = email;
@@ -34,6 +35,7 @@ public class DataInitializer implements CommandLineRunner {
         // 유저 생성
         userRepository.save(user1);
         userRepository.save(user2);
+        userRepository.save(user3);
 
 
     }
