@@ -82,7 +82,7 @@ public class FriendService {
         List<ReadResponse> followerUserList = new ArrayList<>();
 
         for (Friend friend : followerList) {
-            User user = userRepository.findById(friend.getId().getUserIdFrom())
+            User user = userRepository.findById(friend.getId().getUserIdFrom()) // 팔로워 : getUserIdFrom()
                     .orElseThrow(() -> new CustomException(NO_MEMBER_ID));
             ReadResponse dto = new ReadResponse(
                     user.getId(),
@@ -94,6 +94,27 @@ public class FriendService {
             followerUserList.add(dto);
         }
         return followerUserList;
+    }
+    //endregion
+
+    //region 팔로잉 리스트 조회
+    public List<ReadResponse> getFollowingList(Long userId) {
+        List<Friend> followingList = friendRepository.findByIdUserIdFrom(userId); // 팔로잉 : userId가 userIdFrom에 등록되어있음
+        List<ReadResponse> followingUserList = new ArrayList<>();
+
+        for (Friend friend : followingList) {
+            User user = userRepository.findById(friend.getId().getUserIdTo()) // 팔로잉 : getUserIdTo()
+                    .orElseThrow(() -> new CustomException(NO_MEMBER_ID));
+            ReadResponse dto = new ReadResponse(
+                    user.getId(),
+                    user.getNickname(),
+                    user.getName(),
+                    user.getProfileImage(),
+                    user.getIntroduce()
+            );
+            followingUserList.add(dto);
+        }
+        return followingUserList;
     }
     //endregion
 

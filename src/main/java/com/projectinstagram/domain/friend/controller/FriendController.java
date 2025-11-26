@@ -37,4 +37,10 @@ public class FriendController {
         return ResponseEntity.status(HttpStatus.OK).body(friendService.getFollowerList(userId));
     }
 
+    //팔로잉 리스트 조회
+    @GetMapping("/following/{userId}")
+    public ResponseEntity<List<ReadResponse>> getFollowingList(@PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.OK).body(friendService.getFollowingList(userId));
+    }
+
 }

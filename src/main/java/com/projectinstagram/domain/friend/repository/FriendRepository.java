@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface FriendRepository extends JpaRepository<Friend, FriendId> {
     List<Friend> findByIdUserIdTo(Long userIdTo);
+    List<Friend> findByIdUserIdFrom(Long userIdFrom);
 }
