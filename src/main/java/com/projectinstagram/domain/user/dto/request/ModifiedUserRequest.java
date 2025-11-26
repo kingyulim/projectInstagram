@@ -8,10 +8,18 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
-public class JoinUserRequest {
+public class ModifiedUserRequest {
     @NotBlank(message = "이메일이 입력 되지 않았습니다.")
     @Email
     private String email;
+
+    @NotBlank(message = "닉네임이 입력 되지 않았습니다.")
+    @Size(
+            min = 1,
+            max = 20
+    )
+    @Pattern(regexp = RegEXP.NICKNAME)
+    private String nickname;
 
     @NotBlank(message = "이름이 입력되지 않았습니다.")
     @Size(
@@ -25,23 +33,7 @@ public class JoinUserRequest {
     )
     private String name;
 
-    @NotBlank(message = "비밀번호가 입력되지 않았습니다.")
-    @Size(
-            min = 1,
-            max = 20,
-            message = "비밀번호는 1 ~ 20자 로 입력해주세요."
-    )
-    @Pattern(
-            regexp = RegEXP.PASSWORD,
-            message = "비밀번호 형식이 아닙니다."
-    )
-    private String password;
 
-    @NotBlank(message = "닉네임이 입력 되지 않았습니다.")
-    @Size(
-            min = 1,
-            max = 20
-    )
-    @Pattern(regexp = RegEXP.NICKNAME)
-    private String nickname;
+    private String introduce;
+    private String profileImg;
 }

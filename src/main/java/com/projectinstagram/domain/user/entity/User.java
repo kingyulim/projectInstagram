@@ -50,6 +50,36 @@ public class User extends BaseTimeEntity {
     }
 
     /**
+     * 회원 수정 메서드
+     * @param email
+     * @param nickname
+     * @param name
+     * @param introduce
+     * @param profileImage
+     */
+    public void userModified(
+            String email,
+            String nickname,
+            String name,
+            String introduce,
+            String profileImage
+    ) {
+        this.email = email;
+        this.nickname = nickname;
+        this.name = name;
+        this.introduce = introduce;
+        this.profileImage = profileImage;
+    }
+
+    /**
+     * 비밀번호 변경 메서드
+     * @param newPassword 새로운 비밀번호
+     */
+    public void passwordChange(String newPassword) {
+        this.password = newPassword;
+    }
+
+    /**
      * 탈퇴회원 메서드
      * @param isDeletion 탈퇴 상태 파라미터
      */
