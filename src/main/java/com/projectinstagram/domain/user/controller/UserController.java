@@ -2,12 +2,8 @@ package com.projectinstagram.domain.user.controller;
 
 import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.common.exception.ExceptionMessageEnum;
-import com.projectinstagram.domain.user.dto.request.DeleteUserRequest;
-import com.projectinstagram.domain.user.dto.request.JoinUserRequest;
-import com.projectinstagram.domain.user.dto.request.AcountUserRequest;
-import com.projectinstagram.domain.user.dto.response.JoinUserResponse;
-import com.projectinstagram.domain.user.dto.response.LoginUserResponse;
-import com.projectinstagram.domain.user.dto.response.SessionResponse;
+import com.projectinstagram.domain.user.dto.request.*;
+import com.projectinstagram.domain.user.dto.response.*;
 import com.projectinstagram.domain.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -67,6 +63,27 @@ public class UserController {
     }
 
     /**
+     * 로그아웃 요청 검증
+     * @param session 세선 파라미터
+     * @return 204 no content
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpSession session) {
+        SessionResponse thisSession = (SessionResponse) session.getAttribute("thisSession");
+
+        if (thisSession == null) {
+            throw new CustomException(ExceptionMessageEnum.SESSION_CHECK);
+        }
+
+        /**
+         * 세션 제거
+         */
+        session.invalidate();
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    /**
      * 회원 탈퇴 요청 검증
      * @param userId 회원 고유 번호
      * @return
@@ -91,5 +108,76 @@ public class UserController {
         session.invalidate();
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    /**
+     * 프로필 업데이트 요청 검증
+     * @param userId 회원 고유 번호
+     * @param request 입력값 파라미터
+     * @param session 세션 파라미터
+     * @return ModifiedUserResponse json 반환
+     */
+    @PutMapping("users/profile/{userId}")
+    public ResponseEntity<ModifiedUserResponse> modifiedUser(
+            @PathVariable Long userId,
+            @Valid @RequestBody ModifiedUserRequest request,
+            HttpSession session
+    ) {
+        SessionResponse thisSession = (SessionResponse) session.getAttribute("thisSession");
+
+        if (thisSession == null) {
+            throw new CustomException(ExceptionMessageEnum.NO_LOGIN);
+        }
+
+        if (thisSession.getId().equals(userId)) {
+            throw new CustomException(ExceptionMessageEnum.INVALID_MEMBER_INFO);
+        }
+
+        return  ResponseEntity.status(HttpStatus.OK).body(userService.modifiedUser(userId, request));
+    }
+
+    /**
+     * 프로필 조회 요청 검증
+     * @param userId 회원 고유 번호
+     * @return ProfileViewResponse json 반환
+     */
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<ProfileViewResponse> profileView(
+            @PathVariable Long userId,
+            HttpSession session
+    ) {
+        SessionResponse thisSession = (SessionResponse) session.getAttribute("thisSession");
+
+        return ResponseEntity.status(HttpStatus.OK).body(userService.profileView(userId));
+    }
+
+    /**
+     * 비밀번호 변경 요청 검증
+     * @param userId 회원 고유 번호
+     * @param request 입력값 파라미터
+     * @param session 세션 파라미터
+     * @return 200 OK
+     */
+    @PutMapping("/users/password/{userId}")
+    public ResponseEntity<Void> passwordModified(
+            @PathVariable Long userId,
+            @Valid @RequestBody PasswordChangeRequest request,
+            HttpSession session
+    ) {
+        SessionResponse thisSession = (SessionResponse) session.getAttribute("thisSession");
+
+        if (thisSession == null) {
+            throw new CustomException(ExceptionMessageEnum.LOGIN_CHECK);
+        }
+
+        if (!thisSession.getId().equals(userId)) {
+            throw new CustomException(ExceptionMessageEnum.INVALID_MEMBER_INFO);
+        }
+
+        userService.passwordModified(userId, request);
+
+        session.invalidate();
+
+        return ResponseEntity.ok().build();
     }
 }
