@@ -9,6 +9,7 @@ import com.projectinstagram.domain.board.repository.BoardImageRepository;
 import com.projectinstagram.domain.board.repository.BoardRepository;
 import com.projectinstagram.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.sql.Delete;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,10 +61,10 @@ public class BoardService {
 
         // 후에 로그인 기능 추가되면 userId랑 비교 조건 추가할 예정
         if (true) {
-            board.setContent(board.getContent());
+            board.setContent(request.getContent());
         }
         
-        return UpdateBoardResponse.from();
+        return UpdateBoardResponse.from(BoardDto.from(board));
     }
 
     public void uploadImages(MultipartFile image, CreateBoardRequest request) {
@@ -82,4 +83,14 @@ public class BoardService {
         imageRepository.save(boardImage);
 
     }
+
+    public DeleteBoardResponse deleteBoard(Long boardId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CustomException(ExceptionMessageEnum.BOARD_NOT_FOUND_EXCEPTION));
+
+        boardRepository.delete(board);
+
+        return new DeleteBoardResponse(true, "게시물이 삭제되었습니다");
+    }
+
 }

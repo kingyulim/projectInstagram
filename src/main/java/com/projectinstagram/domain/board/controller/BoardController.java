@@ -36,6 +36,7 @@ public class BoardController {
     @PostMapping
     public ResponseEntity<UpdateBoardResponse> update(@RequestBody Long boardId, UpdateBoardRequest request) {
 
+
         return ResponseEntity.status(HttpStatus.OK).body(boardService.updateBoard(boardId, request)); // 일단 임시로
     }
 
@@ -44,5 +45,12 @@ public class BoardController {
         boardService.uploadImages(image, request);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+//    @PostMapping("/{boardId}")
+//    public ResponseEntity<DeleteBoardResponse> delete(@PathVariable Long boardId) {     // 푸시할려고 void로 변경
+//        DeleteBoardResponse response = boardService.deleteBoard(boardId);
+//
+//        return ResponseEntity.status(HttpStatus.OK)
+//    }
 
 }
