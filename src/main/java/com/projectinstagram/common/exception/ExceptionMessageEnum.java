@@ -11,8 +11,6 @@ public enum ExceptionMessageEnum {
     NO_LOGIN(HttpStatus.UNAUTHORIZED, "로그인이 되지 않았습니다."),
     BOARD_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, "해당 게시물은 존재하지 않습니다."),
     POST_ACCESS_DENIED_EXCEPTION(HttpStatus.UNAUTHORIZED, "접근 불가능한 게시물입니다."),
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 댓글을 찾을 수 없습니다."),
-    COMMENT_ACCESS_DENIED(HttpStatus.UNAUTHORIZED, "댓글 수정/삭제 권한이 없습니다."),
     ;
 
     private final HttpStatus status;
