@@ -2,14 +2,17 @@ package com.projectinstagram.domain.board.entity;
 
 import com.projectinstagram.common.entity.BaseTimeEntity;
 import com.projectinstagram.domain.board.dto.CreateBoardRequest;
+import com.projectinstagram.domain.board.dto.UpdateBoardRequest;
 import com.projectinstagram.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Getter
+@Setter
 @Entity
 @Table(name="boards")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

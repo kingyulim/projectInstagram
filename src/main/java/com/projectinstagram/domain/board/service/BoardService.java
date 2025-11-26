@@ -29,7 +29,7 @@ public class BoardService {
     private final BoardImageRepository imageRepository;
     private final String uploadRootDir = "board_images";
 
-    public CreateBoardResponse createBoard(User user, CreateBoardRequest request){
+    public CreateBoardResponse createBoard(User user, CreateBoardRequest request) {
         Board board = boardRepository.save(Board.from(null, request));
 
         return new CreateBoardResponse(BoardDto.from(board));
@@ -46,21 +46,32 @@ public class BoardService {
         List<Board> boards = boardRepository.findAllByIdOrderByModifiedAtDesc(id);
         List<ReadBoardResponse> result = new ArrayList<>();
 
-        for (Board board: boards){
+        for (Board board : boards) {
             result.add(new ReadBoardResponse(BoardDto.from(board)));
         }
         return result;
     }
 
-//    @Transactional
-//    public UpdateBoardResponse update()
+    @Transactional
+    public UpdateBoardResponse updateBoard(Long boardId, UpdateBoardRequest request) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CustomException(ExceptionMessageEnum.BOARD_NOT_FOUND_EXCEPTION));
+        new UpdateBoardResponse(BoardDto.from(board));
 
-    public void uploadImages(MultipartFile image, CreateBoardRequest request){
+        // 후에 로그인 기능 추가되면 userId랑 비교 조건 추가할 예정
+        if (true) {
+            board.setContent(board.getContent());
+        }
+        
+        return UpdateBoardResponse.from();
+    }
+
+    public void uploadImages(MultipartFile image, CreateBoardRequest request) {
         Board board = boardRepository.save(Board.from(null, request));
 
         String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
         Path filePath = Paths.get(uploadRootDir, fileName);
-        try{
+        try {
             Files.createDirectories(filePath.getParent());
             image.transferTo(filePath.toFile());
         } catch (IOException e) {

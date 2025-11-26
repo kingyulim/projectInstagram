@@ -1,8 +1,6 @@
 package com.projectinstagram.domain.board.controller;
 
-import com.projectinstagram.domain.board.dto.CreateBoardRequest;
-import com.projectinstagram.domain.board.dto.CreateBoardResponse;
-import com.projectinstagram.domain.board.dto.ReadBoardResponse;
+import com.projectinstagram.domain.board.dto.*;
 import com.projectinstagram.domain.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,6 +31,12 @@ public class BoardController {
     public ResponseEntity<List<ReadBoardResponse>> readAll(@RequestParam Long id) {
 
         return ResponseEntity.status(HttpStatus.OK).body(boardService.readAllBoard(id));
+    }
+    
+    @PostMapping
+    public ResponseEntity<UpdateBoardResponse> update(@RequestBody Long boardId, UpdateBoardRequest request) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.updateBoard(boardId, request)); // 일단 임시로
     }
 
     @PostMapping("/upload_image")
