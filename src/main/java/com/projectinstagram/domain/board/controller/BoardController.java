@@ -46,11 +46,11 @@ public class BoardController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-//    @PostMapping("/{boardId}")
-//    public ResponseEntity<DeleteBoardResponse> delete(@PathVariable Long boardId) {     // 푸시할려고 void로 변경
-//        DeleteBoardResponse response = boardService.deleteBoard(boardId);
-//
-//        return ResponseEntity.status(HttpStatus.OK)
-//    }
+    @PostMapping("/{boardId}")
+    public ResponseEntity<DeleteBoardResponse> delete(@PathVariable Long boardId) {     // 푸시할려고 void로 변경
+        DeleteBoardResponse response = boardService.deleteBoard(boardId);
+
+        return ResponseEntity.ok(response);
+    }
 
 }
