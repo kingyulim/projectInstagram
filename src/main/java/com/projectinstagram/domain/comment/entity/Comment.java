@@ -1,7 +1,6 @@
 package com.projectinstagram.domain.comment.entity;
 
 import com.projectinstagram.common.entity.BaseTimeEntity;
-import com.projectinstagram.domain.board.entity.Board;
 import com.projectinstagram.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
