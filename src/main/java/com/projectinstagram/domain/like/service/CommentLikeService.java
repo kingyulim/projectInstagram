@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.projectinstagram.common.exception.ExceptionMessageEnum.NO_MEMBER_ID;
+import static com.projectinstagram.common.exception.ExceptionMessageEnum.SELF_LIKE_EXCEPTION;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class CommentLikeService {
             Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND_EXCEPTION)); /*COMMENT_NOT_FOUND_EXCEPTION로 변경필요*/
             User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(NO_MEMBER_ID));
             if (comment.getUserId().getId().equals(userId)) { //본인이 작성한 게시물과 댓글에 좋아요를 남길 수 없는 기능 /*병합시 comment 엔티티의 user필드 명칭 변경되면 에러*/
-             throw new CustomException(null); /*에러 추가: 본인이 작성한 게시물과 댓글에 좋아요를 남길 수 없습니다.*/
+             throw new CustomException(SELF_LIKE_EXCEPTION); /*에러 추가: 본인이 작성한 게시물과 댓글에 좋아요를 남길 수 없습니다.*/
             } else {
                 CommentLike commentLike = new CommentLike(comment, user);
                 commentLikeRepository.save(commentLike); //좋아요가 안눌려있으면 좋아요 생성
