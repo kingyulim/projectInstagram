@@ -51,12 +51,14 @@ public class ImageService {
     //삭제
     public boolean delete(ImageUrl url, String fileName){
         Path filePath = buildFilePath(url, fileName);
+        boolean deleted;
         try {
             Files.deleteIfExists(filePath);
+            deleted = Files.deleteIfExists(filePath);
         } catch (IOException e) {
             throw new CustomException(ExceptionMessageEnum.FAILED_DELETE_FILE);
         }
-        return true;
+        return deleted;
     }
 
     //리스트용
