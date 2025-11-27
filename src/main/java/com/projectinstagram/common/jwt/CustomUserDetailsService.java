@@ -16,13 +16,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
+    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
+        User user = userRepository.findById(Long.parseLong(id))
                 .orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
 
-        UserBuilder builder = org.springframework.security.core.userdetails.User.withUsername(user.getEmail());
-        builder.password(user.getPassword());
-        builder.roles("USER"); // 필요하면 DB Role 적용
-        return builder.build();
+//        UserBuilder builder = org.springframework.security.core.userdetails.User.withUsername(user.getEmail());
+//        builder.password(user.getPassword());
+//        builder.roles("USER"); // 필요하면 DB Role 적용
+        return new CustomUserDetails(user);
     }
 }

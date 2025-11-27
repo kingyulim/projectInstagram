@@ -44,7 +44,7 @@ public class JwtUtil {
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .claim("userId", userid) // 사용자 고유 번호
+                        .claim("userId", String.valueOf(userid)) // 사용자 고유 번호
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간 설정
                         .setIssuedAt(date) // 발급 시간 설정
                         .signWith(key, signatureAlgorithm) // 비밀 키와 알고리즘으로 서명
@@ -53,24 +53,12 @@ public class JwtUtil {
 
     // 회원 고유 번호 추출
     public Long getUserIdFromToken(String token) {
-        return Long.valueOf(
-                Jwts.parserBuilder()
+        Claims claims = Jwts.parserBuilder()
                         .setSigningKey(key)
                         .build()
                         .parseClaimsJws(token)
-                        .getBody()
-                        .getSubject()
-        );
-    }
-
-    // 이메일 추출
-    public String getEmailFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                        .getBody();
+        return Long.valueOf(claims.get("userId", String.class));
     }
 
     // 토큰 검증
