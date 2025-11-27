@@ -61,8 +61,6 @@ public class JwtFilter extends OncePerRequestFilter {
             response.getWriter().write("{\"error\": \"Unauthorized\"}");
         }
 
-
-
         /**
          * 토큰 유효성 검사
          */
