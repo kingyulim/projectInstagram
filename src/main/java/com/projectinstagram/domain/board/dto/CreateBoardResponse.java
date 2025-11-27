@@ -19,5 +19,4 @@ public class CreateBoardResponse {
         this.contentImg = dto.getContentImg();
         this.createdAt = dto.getCreatedAt();
     }
-
 }

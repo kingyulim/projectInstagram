@@ -1,6 +1,7 @@
 package com.projectinstagram.domain.like.service;
 
 import com.projectinstagram.common.exception.CustomException;
+import com.projectinstagram.common.exception.ExceptionMessageEnum;
 import com.projectinstagram.domain.comment.entity.Comment;
 import com.projectinstagram.domain.comment.repository.CommentRepository;
 import com.projectinstagram.domain.like.dto.CreateResponse;

@@ -14,7 +14,6 @@ import com.projectinstagram.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.ArrayList;
@@ -29,15 +28,14 @@ public class BoardService {
     private final UserRepository userRepository;
     private final ImageService imageService;
 
-    public CreateBoardResponse createBoard(List<MultipartFile> images, CreateBoardRequest request) {
-        User user = userRepository.findById(1L).orElseThrow();
-        List<String>imageUrls = imageService.storeAll(ImageUrl.BOARD_URL,images);
+    public CreateBoardResponse createBoard(Long id, CreateBoardRequest request) {
+        User user = userRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionMessageEnum.NO_MEMBER_INFO));
+        List<String>imageUrls = imageService.storeAll(ImageUrl.BOARD_URL,request.getImages());
         Board board = Board.from(user, request);
         List<BoardImage> imageList = new ArrayList<>();
         for (String imageUrl: imageUrls) {
-            imageList.add(new BoardImage(board, imageUrl));
+            board.setImages(new BoardImage(imageUrl));
         }
-        board.setImages(imageList);
         return new CreateBoardResponse(BoardDto.from(boardRepository.save(board)));
     }
 
@@ -59,24 +57,27 @@ public class BoardService {
         return result;
     }
 
-    public UpdateBoardResponse updateBoard(Long boardId, UpdateBoardRequest request) {
+    public UpdateBoardResponse updateBoard(Long tokenId, Long boardId, UpdateBoardRequest request) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CustomException(ExceptionMessageEnum.BOARD_NOT_FOUND_EXCEPTION));
 
 
         // 후에 로그인 기능 추가되면 userId랑 비교 조건 추가할 예정
-        if (true) {
-            board.setContent(request.getContent());
+        if (board.getUserId().getId().equals(tokenId)) {
+            new CustomException(ExceptionMessageEnum.NO_MEMBER_INFO);
         }
+        board.setContent(request);
         return UpdateBoardResponse.from(BoardDto.from(board));
     }
 
-    public DeleteBoardResponse deleteBoard(Long boardId) {
+    public DeleteBoardResponse deleteBoard(Long tokenId, Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CustomException(ExceptionMessageEnum.BOARD_NOT_FOUND_EXCEPTION));
-
+        if (board.getUserId().getId().equals(tokenId)) {
+            new CustomException(ExceptionMessageEnum.NO_MEMBER_INFO);
+        }
         boardRepository.delete(board);
 
-        return new DeleteBoardResponse(true, "게시물이 삭제되었습니다");
+        return new DeleteBoardResponse("게시물이 삭제되었습니다");
     }
 }
