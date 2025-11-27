@@ -3,10 +3,12 @@ package com.projectinstagram.domain.comment.service;
 import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.common.exception.ExceptionMessageEnum;
 import com.projectinstagram.domain.board.entity.Board;
+import com.projectinstagram.domain.board.repository.BoardRepository;
 import com.projectinstagram.domain.comment.dto.*;
 import com.projectinstagram.domain.comment.entity.Comment;
 import com.projectinstagram.domain.comment.repository.CommentRepository;
 import com.projectinstagram.domain.user.entity.User;
+import com.projectinstagram.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -73,7 +75,4 @@ public class CommentService {
         }
         commentRepository.deleteById(commentId);
     }
-
-    //COMMENT_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "해당 댓글을 찾을 수 없습니다."),
-    //COMMENT_ACCESS_DENIED_EXCEPTION(HttpStatus.UNAUTHORIZED, "댓글 수정/삭제 권한이 없습니다.")
 }
