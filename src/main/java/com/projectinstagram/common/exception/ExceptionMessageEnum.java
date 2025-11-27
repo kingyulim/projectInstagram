@@ -8,9 +8,18 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ExceptionMessageEnum {
     NO_MEMBER_ID(HttpStatus.NOT_FOUND, "해당 ID의 회원을 찾을 수 없습니다."),
+    NO_MEMBER_INFO(HttpStatus.NOT_FOUND, "해당 회원 정보를 찾을 수 없습니다."),
+    LOGIN_CHECK(HttpStatus.UNAUTHORIZED, "로그인이 되어있습니다."),
+    SESSION_CHECK(HttpStatus.NOT_FOUND, "세션이 존재하지 않습니다."),
+    TOKEN_CHECK(HttpStatus.NOT_FOUND, "토큰이 존재하지 않습니다."),
+    IS_DELETION_USER(HttpStatus.UNAUTHORIZED, "탈퇴한 회원입니다."),
+    INVALID_MEMBER_INFO(HttpStatus.BAD_REQUEST, "회원 정보가 일치하지 않습니다."),
     NO_LOGIN(HttpStatus.UNAUTHORIZED, "로그인이 되지 않았습니다."),
     BOARD_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, "해당 게시물은 존재하지 않습니다."),
-    POST_ACCESS_DENIED_EXCEPTION(HttpStatus.UNAUTHORIZED, "접근 불가능한 게시물입니다.")
+    POST_ACCESS_DENIED_EXCEPTION(HttpStatus.UNAUTHORIZED, "접근 불가능한 게시물입니다."),
+    PATTERN_VALIDATION_FAILED_EXCEPTION(HttpStatus.BAD_REQUEST, "입력 값이 허용된 형식(정규식)에 맞지 않습니다."),
+    DUPLICATE_DATA_EXCEPTION(HttpStatus.CONFLICT, "이미 존재하는 데이터 입니다"),
+    FAILED_DELETE_FILE(HttpStatus.BAD_REQUEST, "잘못된 요청값 입니다.")
     ;
 
     private final HttpStatus status;
