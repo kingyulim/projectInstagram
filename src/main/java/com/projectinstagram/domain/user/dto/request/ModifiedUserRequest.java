@@ -35,5 +35,4 @@ public class ModifiedUserRequest {
 
 
     private String introduce;
-    private String profileImg;
 }
