@@ -13,6 +13,7 @@ import com.projectinstagram.domain.like.repository.BoardLikeRepository;
 import com.projectinstagram.domain.like.repository.CommentLikeRepository;
 import com.projectinstagram.domain.user.entity.User;
 import com.projectinstagram.domain.user.repository.UserRepository;
+import com.projectinstagram.domain.user.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -28,16 +29,17 @@ public class DataInitializer implements CommandLineRunner {
     private final CommentRepository commentRepository;
     private final BoardLikeRepository boardLikeRepository;
     private final CommentLikeRepository commentLikeRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
 
         // 유저 준비
-        User user1 = new User("test@email.com","김테스트","1234", "test_id");
-        User user2 = new User("test@email.com2","김테스트2","1234","test_id2");
-        User user3 = new User("test@email.com3","김테스트3","1234","test_id3");
-        User user4 = new User("test@email.com4","김테스트4","1234","test_id4");
-        User user5 = new User("test@email.com5","김테스트5","1234", "test_id5");
+        User user1 = new User("test@email.com","김테스트", passwordEncoder.encode("1234"), "test_id");
+        User user2 = new User("test2@email.com","김테스트2", passwordEncoder.encode("1234"),"test_id2");
+        User user3 = new User("test3@email.com","김테스트3", passwordEncoder.encode("1234"),"test_id3");
+        User user4 = new User("test4@email.com","김테스트4", passwordEncoder.encode("1234"),"test_id4");
+        User user5 = new User("test5@email.com","김테스트5", passwordEncoder.encode("1234"), "test_id5");
         // 유저 생성
         userRepository.save(user1);
         userRepository.save(user2);
