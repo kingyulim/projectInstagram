@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,7 +44,7 @@ public class UserController {
          * thisSession 세션 없으면 예외처리
          */
         if (thisSession != null) {
-            throw new CustomException(ExceptionMessageEnum.SESSION_CHECK);
+            throw new CustomException(ExceptionMessageEnum.LOGIN_CHECK);
         }
 
         LoginUserResponse loginUserResponse = userService.login(request);
@@ -97,7 +98,7 @@ public class UserController {
         SessionResponse thisSession = (SessionResponse) session.getAttribute("thisSession");
 
         if (thisSession == null) {
-            throw new CustomException(ExceptionMessageEnum.LOGIN_CHECK);
+            throw new CustomException(ExceptionMessageEnum.NO_LOGIN);
         }
 
         userService.userDelete(userId, request);
@@ -120,7 +121,8 @@ public class UserController {
     @PutMapping("users/profile/{userId}")
     public ResponseEntity<ModifiedUserResponse> modifiedUser(
             @PathVariable Long userId,
-            @Valid @RequestBody ModifiedUserRequest request,
+            @RequestPart MultipartFile profileImage,
+            @Valid @RequestPart ModifiedUserRequest request,
             HttpSession session
     ) {
         SessionResponse thisSession = (SessionResponse) session.getAttribute("thisSession");
@@ -129,11 +131,11 @@ public class UserController {
             throw new CustomException(ExceptionMessageEnum.NO_LOGIN);
         }
 
-        if (thisSession.getId().equals(userId)) {
+        if (!thisSession.getId().equals(userId)) {
             throw new CustomException(ExceptionMessageEnum.INVALID_MEMBER_INFO);
         }
 
-        return  ResponseEntity.status(HttpStatus.OK).body(userService.modifiedUser(userId, request));
+        return  ResponseEntity.status(HttpStatus.OK).body(userService.modifiedUser(userId, profileImage, request));
     }
 
     /**
@@ -167,7 +169,7 @@ public class UserController {
         SessionResponse thisSession = (SessionResponse) session.getAttribute("thisSession");
 
         if (thisSession == null) {
-            throw new CustomException(ExceptionMessageEnum.LOGIN_CHECK);
+            throw new CustomException(ExceptionMessageEnum.NO_LOGIN);
         }
 
         if (!thisSession.getId().equals(userId)) {
