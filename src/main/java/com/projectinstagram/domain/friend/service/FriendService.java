@@ -53,17 +53,17 @@ public class FriendService {
     //endregion
 
     //region 친구추가 (팔로우)
-    public CreateResponse follow (CreateRequest request, Long userIdFrom/*토큰으로부터 받은 값(수정필요)*/) {
+    public CreateResponse follow (CreateRequest request, Long userIdFrom) {
         FriendInfo friendinfo = prepareFriendInfo(request, userIdFrom);
         if (friendinfo.isFriended) {throw new CustomException(ExceptionMessageEnum.ALREADY_FRIEND_EXCEPTION);} //이미 친구인지 확인
         Friend friend = new Friend(friendinfo.getUserFrom(), friendinfo.getUserTo());
         friendRepository.save(friend);
-        return new CreateResponse(userIdFrom); /*토큰값으로부터 Long으로 변환필요*/
+        return new CreateResponse(userIdFrom);
     }
     //endregion
 
     //region 친구삭제 (언팔로우)
-    public void unfollow(CreateRequest request, Long userIdFrom/*토큰으로부터 받은 값(수정필요)*/) {
+    public void unfollow(CreateRequest request, Long userIdFrom) {
         FriendInfo friendinfo = prepareFriendInfo(request, userIdFrom);
         if (!friendinfo.isFriended) {throw new CustomException(ExceptionMessageEnum.NOT_FRIEND_EXCEPTION);} //친구가 아닌지 확인
         friendRepository.deleteById(friendinfo.friendId);

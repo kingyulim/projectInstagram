@@ -33,11 +33,11 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         // 유저 준비
-        User user1 = new User("test@email.com", "test_id", "김테스트","1234");
-        User user2 = new User("test@email.com2", "test_id2", "김테스트2","1234");
-        User user3 = new User("test@email.com3", "test_id3", "김테스트3","1234");
-        User user4 = new User("test@email.com4", "test_id4", "김테스트4","1234");
-        User user5 = new User("test@email.com5", "test_id5", "김테스트5","1234");
+        User user1 = new User("test@email.com","김테스트","1234", "test_id");
+        User user2 = new User("test@email.com2","김테스트2","1234","test_id2");
+        User user3 = new User("test@email.com3","김테스트3","1234","test_id3");
+        User user4 = new User("test@email.com4","김테스트4","1234","test_id4");
+        User user5 = new User("test@email.com5","김테스트5","1234", "test_id5");
         // 유저 생성
         userRepository.save(user1);
         userRepository.save(user2);
