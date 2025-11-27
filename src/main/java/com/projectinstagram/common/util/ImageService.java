@@ -2,6 +2,7 @@ package com.projectinstagram.common.util;
 
 import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.common.exception.ExceptionMessageEnum;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,9 +17,14 @@ import java.util.UUID;
 
 @Service
 public class ImageService {
+    @Value("${root.project-dir}")
+    private String projectRoot;
 
     //단건 저장.
     public String store(ImageUrl url, MultipartFile file) {
+        if (file.isEmpty())
+            throw new CustomException(ExceptionMessageEnum.NOT_FOUND_THIS_FILE);
+
         String fileName = generateFileName(file);
         Path filePath = buildFilePath(url, fileName);
 
@@ -72,24 +78,21 @@ public class ImageService {
         return deleteAll(url, Arrays.asList(files));
     }
 
-
     //파일명 겹치지 않도록 고유값을 추가하여 파일명 지정.
     private String generateFileName(MultipartFile file) {
-        return UUID.randomUUID() + "_" + file.getOriginalFilename();
+        String originalName = file.getOriginalFilename();
+        originalName = originalName.replaceAll("[^a-zA-Z0-9._-]", "_");
+        return UUID.randomUUID() + "_" + originalName;
     }
 
     //키워드를 디렉토리 경로로 연결해주는 메서드
     private Path buildFilePath(ImageUrl url, String fileName) {
-        return Paths.get(url.getUrl(), fileName);
+
+        return Paths.get(projectRoot, ImageUrl.FILE_DIRECORY.getUrl(), url.getUrl(), fileName);
     }
 
     // 반환해줄 주소와 파일명.
     private String buildPublicUrl(ImageUrl url, String fileName) {
-        String path = url.getUrl();
-
-        if (!path.startsWith("/")) path = "/" + path;
-        if (!path.endsWith("/")) path += "/";
-
-        return path + fileName;
+        return "/" + ImageUrl.FILE_DIRECORY.getUrl() + "/" + url.getUrl() + "/" + fileName;
     }
 }
