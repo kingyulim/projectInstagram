@@ -21,7 +21,10 @@ public enum ExceptionMessageEnum {
     DUPLICATE_DATA_EXCEPTION(HttpStatus.CONFLICT, "이미 존재하는 데이터 입니다"),
     FAILED_DELETE_FILE(HttpStatus.BAD_REQUEST, "잘못된 요청값 입니다."),
     NOT_FOUND_THIS_FILE(HttpStatus.BAD_REQUEST, "잘못된 파일 요청입니다"),
-    SELF_LIKE_EXCEPTION(HttpStatus.UNAUTHORIZED, "본인이 작성한 게시물과 댓글에 좋아요를 남길 수 없습니다.")
+    SELF_LIKE_EXCEPTION(HttpStatus.UNAUTHORIZED, "본인이 작성한 게시물과 댓글에 좋아요를 남길 수 없습니다."),
+    SELF_FOLLOW_EXCEPTION(HttpStatus.UNAUTHORIZED, "스스로에게 팔로우, 언팔로우 할 수 없습니다."),
+    ALREADY_FRIEND_EXCEPTION(HttpStatus.UNAUTHORIZED, "해당 유저는 이미 친구입니다."),
+    NOT_FRIEND_EXCEPTION(HttpStatus.NOT_FOUND, "해당 유저는 친구가 아닙니다.")
     ;
 
     private final HttpStatus status;

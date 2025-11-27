@@ -11,15 +11,24 @@ import lombok.NoArgsConstructor;
 @Table(name="friends")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Friend {
-    //id는 복합키로 해결
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
+    @EmbeddedId
+    private FriendId id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="user_id_from")
-    private User userIdFrom;
+    @JoinColumn(name="user_id_from", nullable = false)
+    @MapsId("userIdFrom")//복합키의 userIdFrom과 매핑
+    private User userFrom;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="user_id_to")
-    private User userIdTo;
+    @JoinColumn(name="user_id_to", nullable = false)
+    @MapsId("userIdTo")//복합키의 userIdTo와 매핑
+    private User userTo;
+
+    public Friend (User userFrom, User userTo) {
+        this.id = new FriendId(userFrom.getId(), userTo.getId());
+        this.userFrom = userFrom;
+        this.userTo = userTo;
+    }
+
 }
