@@ -1,7 +1,6 @@
 package com.projectinstagram.domain.friend.service;
 
 import com.projectinstagram.common.exception.CustomException;
-import com.projectinstagram.domain.friend.deletion.UserRepository;
 import com.projectinstagram.domain.friend.dto.*;
 import com.projectinstagram.domain.friend.entity.Friend;
 import com.projectinstagram.domain.friend.entity.FriendId;
