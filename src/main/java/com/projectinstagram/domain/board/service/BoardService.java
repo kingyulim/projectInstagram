@@ -29,8 +29,8 @@ public class BoardService {
     private final UserRepository userRepository;
     private final ImageService imageService;
 
-    public CreateBoardResponse createBoard(Long tokenId, List<MultipartFile> images, CreateBoardRequest request) {
-        User user = userRepository.findById(tokenId).orElseThrow();
+    public CreateBoardResponse createBoard(List<MultipartFile> images, CreateBoardRequest request) {
+        User user = userRepository.findById(1L).orElseThrow();
         List<String>imageUrls = imageService.storeAll(ImageUrl.BOARD_URL,images);
         Board board = Board.from(user, request);
         List<BoardImage> imageList = new ArrayList<>();

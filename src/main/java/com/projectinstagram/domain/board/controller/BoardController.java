@@ -1,13 +1,10 @@
 package com.projectinstagram.domain.board.controller;
 
-import com.projectinstagram.common.jwt.CustomUserDetails;
 import com.projectinstagram.domain.board.dto.*;
 import com.projectinstagram.domain.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,9 +18,9 @@ public class BoardController {
 
     @PostMapping
     public ResponseEntity<CreateBoardResponse> create(@RequestPart CreateBoardRequest request,
-                                                      @RequestPart List<MultipartFile> files,
-                                                      @AuthenticationPrincipal CustomUserDetails userDetails) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(boardService.createBoard(userDetails.getId(),files ,request));
+                                                      @RequestPart List<MultipartFile> files
+                                                      ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(boardService.createBoard(files ,request));
     }
 
     @GetMapping("/{boardId}")
