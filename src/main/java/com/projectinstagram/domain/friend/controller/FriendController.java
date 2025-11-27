@@ -2,6 +2,8 @@ package com.projectinstagram.domain.friend.controller;
 
 import com.projectinstagram.domain.friend.dto.*;
 import com.projectinstagram.domain.friend.service.FriendService;
+import com.projectinstagram.domain.user.dto.response.TokenResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,13 +20,17 @@ public class FriendController {
 
     //친구추가 (팔로우)
     @PostMapping
-    public ResponseEntity<CreateResponse> follow (@RequestBody @Valid CreateRequest request, @RequestParam Long userIdFrom/*토큰에서 받는것으로 추후 수정*/) {
+    public ResponseEntity<CreateResponse> follow (@RequestBody @Valid CreateRequest request, HttpServletRequest servletRequest) {
+        TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
+        Long userIdFrom = thisToken.getId();
         return ResponseEntity.status(HttpStatus.OK).body(friendService.follow(request, userIdFrom));
     }
 
     //친구삭제 (언팔로우)
     @PostMapping("/unfollow")
-    public ResponseEntity<Void> unfollow (@RequestBody @Valid CreateRequest request, @RequestParam Long userIdFrom/*토큰에서 받는것으로 추후 수정*/) {
+    public ResponseEntity<Void> unfollow (@RequestBody @Valid CreateRequest request, HttpServletRequest servletRequest) {
+        TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
+        Long userIdFrom = thisToken.getId();
         friendService.unfollow(request, userIdFrom);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
