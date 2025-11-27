@@ -20,7 +20,8 @@ public enum ExceptionMessageEnum {
     PATTERN_VALIDATION_FAILED_EXCEPTION(HttpStatus.BAD_REQUEST, "입력 값이 허용된 형식(정규식)에 맞지 않습니다."),
     DUPLICATE_DATA_EXCEPTION(HttpStatus.CONFLICT, "이미 존재하는 데이터 입니다"),
     FAILED_DELETE_FILE(HttpStatus.BAD_REQUEST, "잘못된 요청값 입니다."),
-    NOT_FOUND_THIS_FILE(HttpStatus.BAD_REQUEST, "잘못된 파일 요청입니다")
+    NOT_FOUND_THIS_FILE(HttpStatus.BAD_REQUEST, "잘못된 파일 요청입니다"),
+    SELF_LIKE_EXCEPTION(HttpStatus.UNAUTHORIZED, "본인이 작성한 게시물과 댓글에 좋아요를 남길 수 없습니다.")
     ;
 
     private final HttpStatus status;

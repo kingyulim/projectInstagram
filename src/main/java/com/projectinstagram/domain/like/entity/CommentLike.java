@@ -9,19 +9,27 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name="comment_likes")
+@Table(name = "comment_likes")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentLike {
-    //복합키로 해결할 예정
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="comment_id")
-    private Comment commentId;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="user_id")
-    private User userId;
 
+    @EmbeddedId
+    private CommentLikeId id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "comment_id", nullable = false)
+    @MapsId("commentId")//복합키의 commentId와 매핑
+    private Comment comment;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    @MapsId("userId") //복합키의 userId와 매핑
+    private User user;
+
+    public CommentLike(Comment comment, User user) {
+        this.id = new CommentLikeId(comment.getId(), user.getId());
+        this.comment = comment;
+        this.user = user;
+    }
 
 }
