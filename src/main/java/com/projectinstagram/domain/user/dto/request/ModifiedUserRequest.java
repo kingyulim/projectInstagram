@@ -33,6 +33,5 @@ public class ModifiedUserRequest {
     )
     private String name;
 
-
     private String introduce;
 }
