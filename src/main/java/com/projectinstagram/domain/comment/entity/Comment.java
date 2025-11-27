@@ -22,4 +22,18 @@ public class Comment extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="user_id")
     private User userId;
+
+    @Column(length = 150, nullable = false)
+    private String content;
+
+    public Comment(Board boardId, User userId, String content) {
+        this.boardId = boardId;
+        this.userId = userId;
+        this.content = content;
+    }
+
+    public void update(String content) {
+        this.content = content;
+    }
+
 }
