@@ -24,8 +24,8 @@ public class Board extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="user_id")
     private User userId;
-    @OneToMany(mappedBy = "board_id")
-    private List<BoardImage> iamges;
+    @OneToMany(mappedBy = "boardId")
+    private List<BoardImage> images;
     private String content;
 
     public Board(User user, CreateBoardRequest request) {

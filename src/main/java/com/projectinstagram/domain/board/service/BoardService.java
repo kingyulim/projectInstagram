@@ -2,22 +2,19 @@ package com.projectinstagram.domain.board.service;
 
 import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.common.exception.ExceptionMessageEnum;
+import com.projectinstagram.common.util.ImageService;
+import com.projectinstagram.common.util.ImageUrl;
 import com.projectinstagram.domain.board.dto.*;
 import com.projectinstagram.domain.board.entity.Board;
-import com.projectinstagram.domain.board.entity.BoardImage;
 import com.projectinstagram.domain.board.repository.BoardImageRepository;
 import com.projectinstagram.domain.board.repository.BoardRepository;
 import com.projectinstagram.domain.user.entity.User;
+import com.projectinstagram.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.sql.Delete;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,14 +25,17 @@ import java.util.List;
 public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardImageRepository imageRepository;
-    private final String uploadRootDir = "board_images";
+    private final UserRepository userRepository;
+    private final ImageService imageService;
 
-    public CreateBoardResponse createBoard(User user, CreateBoardRequest request) {
-        Board board = boardRepository.save(Board.from(null, request));
-
+    public CreateBoardResponse createBoard(Long tokenId, List<MultipartFile> images, CreateBoardRequest request) {
+        User user = userRepository.findById(tokenId).orElseThrow();
+        Board board = boardRepository.save(Board.from(user, request));
+        imageService.storeAll(ImageUrl.BOARD_URL,images);
         return new CreateBoardResponse(BoardDto.from(board));
     }
 
+    @Transactional(readOnly = true)
     public ReadBoardResponse readOneBoard(Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(
                 () -> new CustomException(ExceptionMessageEnum.BOARD_NOT_FOUND_EXCEPTION));
@@ -53,35 +53,16 @@ public class BoardService {
         return result;
     }
 
-    @Transactional
     public UpdateBoardResponse updateBoard(Long boardId, UpdateBoardRequest request) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CustomException(ExceptionMessageEnum.BOARD_NOT_FOUND_EXCEPTION));
-        new UpdateBoardResponse(BoardDto.from(board));
+
 
         // 후에 로그인 기능 추가되면 userId랑 비교 조건 추가할 예정
         if (true) {
             board.setContent(request.getContent());
         }
-        
         return UpdateBoardResponse.from(BoardDto.from(board));
-    }
-
-    public void uploadImages(MultipartFile image, CreateBoardRequest request) {
-        Board board = boardRepository.save(Board.from(null, request));
-
-        String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
-        Path filePath = Paths.get(uploadRootDir, fileName);
-        try {
-            Files.createDirectories(filePath.getParent());
-            image.transferTo(filePath.toFile());
-        } catch (IOException e) {
-            throw new RuntimeException("파일 저장 실패", e);
-        }
-        BoardImage boardImage = new BoardImage(board, "/uploads/" + fileName);
-
-        imageRepository.save(boardImage);
-
     }
 
     public DeleteBoardResponse deleteBoard(Long boardId) {
@@ -92,5 +73,4 @@ public class BoardService {
 
         return new DeleteBoardResponse(true, "게시물이 삭제되었습니다");
     }
-
 }
