@@ -10,11 +10,18 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 
 @Component
 public class JwtUtil {
     @Value("${jwt.secret.key}")
     private String secretKeyValue;
+
+    /**
+     * 토큰 만료 시간
+     */
+    private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
 
     private SecretKey secretKey;
     private JwtParser jwtParser;
@@ -43,11 +50,15 @@ public class JwtUtil {
             String name,
             String nickName
     ) {
+        Date date = new Date();
+
         return Jwts
                 .builder()
                 .claim("userId", userId)
                 .claim("name", name)
                 .claim("nickName", nickName)
+                .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료시간
+                .setIssuedAt(date) // 발급시간
                 .signWith(secretKey, SIG.HS256)
                 .compact();
     }

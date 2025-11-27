@@ -161,7 +161,7 @@ public class UserService {
      * @param request 입력 파라미터
      * @return ModifiedUserResponse 데이터 반환
      */
-    public ModifiedUserResponse modifiedUser(Long userId, MultipartFile profileImg, ModifiedUserRequest request) {
+    public ModifiedUserResponse modifiedUser(Long userId, ModifiedUserRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(
                         () -> new CustomException(ExceptionMessageEnum.NO_MEMBER_ID)
@@ -171,14 +171,14 @@ public class UserService {
             throw new CustomException(ExceptionMessageEnum.IS_DELETION_USER);
         }
 
-        String imgPath = imageService.store(ImageUrl.USER_URL, profileImg);
+        //String imgPath = imageService.store(ImageUrl.USER_URL, profileImg);
 
         user.userModified(
                 request.getEmail(),
                 request.getNickname(),
                 request.getName(),
-                request.getIntroduce(),
-                imgPath
+                request.getIntroduce()
+                //imgPath
         );
 
         return new ModifiedUserResponse(
