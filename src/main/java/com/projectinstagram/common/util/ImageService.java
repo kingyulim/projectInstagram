@@ -22,8 +22,7 @@ public class ImageService {
     //단건 저장.
     public String store(ImageUrl url, MultipartFile file) {
         if (file.isEmpty())
-            throw new CustomException(ExceptionMessageEnum.NOT_FOUND_THIS_FILE);
-
+            return null;
         String fileName = generateFileName(file);
         Path uploadDir = buildUploadDir(url);
 //        Path uploadDir = Paths.get(projectRoot);
@@ -45,16 +44,13 @@ public class ImageService {
 
     //리스트용
     public List<String> storeAll(ImageUrl url, List<MultipartFile> files) {
+        if (files == null) return null;
+
         List<String> result = new ArrayList<>();
         for (MultipartFile file : files) {
             result.add(store(url, file));
         }
         return result;
-    }
-
-    //배열용
-    public List<String> storeAll(ImageUrl url, MultipartFile[] files) {
-        return storeAll(url, Arrays.asList(files));
     }
 
     //삭제

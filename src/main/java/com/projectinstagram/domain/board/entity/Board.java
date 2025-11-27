@@ -4,12 +4,15 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.projectinstagram.common.entity.BaseTimeEntity;
 import com.projectinstagram.domain.board.dto.CreateBoardRequest;
 import com.projectinstagram.domain.board.dto.UpdateBoardRequest;
+import com.projectinstagram.domain.comment.entity.Comment;
+import com.projectinstagram.domain.like.entity.BoardLike;
 import com.projectinstagram.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,11 +30,19 @@ public class Board extends BaseTimeEntity {
     private User userId;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "boardId", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<BoardImage> images;
+    @OneToMany(mappedBy = "boardId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardImage> images = new ArrayList<BoardImage>();
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardLike> likes = new ArrayList<BoardLike>();
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "boardId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<Comment>();
 
     public Board(User user, CreateBoardRequest request) {
         this.userId = user;

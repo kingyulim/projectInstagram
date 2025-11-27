@@ -5,12 +5,13 @@ import com.projectinstagram.domain.board.service.BoardService;
 import com.projectinstagram.domain.user.dto.response.TokenResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,26 +25,25 @@ public class BoardController {
                                                       ) {
 
         TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
-
+        if (request.getImages().get(0).isEmpty()) request.setImages(new ArrayList<>());
         return ResponseEntity.status(HttpStatus.CREATED).body(boardService.createBoard(thisToken.getId(), request));
     }
 
     @GetMapping("/{boardId}")
     public ResponseEntity<ReadBoardResponse> read(HttpServletRequest servletRequest, @PathVariable Long boardId) {
-        TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
-
-        return ResponseEntity.status(HttpStatus.OK).body(boardService.readOneBoard(thisToken.getId(), boardId));
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.readOneBoard(boardId));
     }
 
-    /** 팔로우 한 사람의 게시물 목록 뿌리기 위해 토큰 필요.*/
     @GetMapping
-    public ResponseEntity<List<ReadBoardResponse>> readAll(HttpServletRequest servletRequest) {
+    public ResponseEntity<Page<ReadAllBoardResponse>> readAll(HttpServletRequest servletRequest,
+                                                           @RequestParam(required = false, defaultValue="0", value="page") int page,
+                                                              @RequestParam(required = false, defaultValue="created_at", value="sort") String sort ) {
         TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
-        return ResponseEntity.status(HttpStatus.OK).body(boardService.readAllBoard(thisToken.getId()));
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.readAllBoard(thisToken.getId(), page, sort));
     }
     
     @PutMapping("/{boardId}")
-    public ResponseEntity<UpdateBoardResponse> update(HttpServletRequest servletRequest,Long boardId, UpdateBoardRequest request) {
+    public ResponseEntity<UpdateBoardResponse> update(HttpServletRequest servletRequest, @PathVariable Long boardId, @RequestBody UpdateBoardRequest request) {
 
         TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
         return ResponseEntity.status(HttpStatus.OK).body(boardService.updateBoard(thisToken.getId(), boardId, request)); // 일단 임시로
