@@ -1,5 +1,6 @@
 package com.projectinstagram.domain.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -8,12 +9,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(name="board_images")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class BoardImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonBackReference
     @ManyToOne(optional = false)
     @JoinColumn(name="board_id")
     private Board boardId;
@@ -23,6 +25,10 @@ public class BoardImage {
 
     public BoardImage(Board boardId, String fileName) {
         this.boardId = boardId;
+        this.fileName = fileName;
+    }
+
+    public BoardImage(String fileName) {
         this.fileName = fileName;
     }
 }

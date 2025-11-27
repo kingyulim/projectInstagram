@@ -6,6 +6,7 @@ import com.projectinstagram.common.util.ImageService;
 import com.projectinstagram.common.util.ImageUrl;
 import com.projectinstagram.domain.board.dto.*;
 import com.projectinstagram.domain.board.entity.Board;
+import com.projectinstagram.domain.board.entity.BoardImage;
 import com.projectinstagram.domain.board.repository.BoardImageRepository;
 import com.projectinstagram.domain.board.repository.BoardRepository;
 import com.projectinstagram.domain.user.entity.User;
@@ -30,9 +31,14 @@ public class BoardService {
 
     public CreateBoardResponse createBoard(Long tokenId, List<MultipartFile> images, CreateBoardRequest request) {
         User user = userRepository.findById(tokenId).orElseThrow();
-        Board board = boardRepository.save(Board.from(user, request));
-        imageService.storeAll(ImageUrl.BOARD_URL,images);
-        return new CreateBoardResponse(BoardDto.from(board));
+        List<String>imageUrls = imageService.storeAll(ImageUrl.BOARD_URL,images);
+        Board board = Board.from(user, request);
+        List<BoardImage> imageList = new ArrayList<>();
+        for (String imageUrl: imageUrls) {
+            imageList.add(new BoardImage(board, imageUrl));
+        }
+        board.setImages(imageList);
+        return new CreateBoardResponse(BoardDto.from(boardRepository.save(board)));
     }
 
     @Transactional(readOnly = true)

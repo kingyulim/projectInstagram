@@ -1,5 +1,6 @@
 package com.projectinstagram.domain.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.projectinstagram.common.entity.BaseTimeEntity;
 import com.projectinstagram.domain.board.dto.CreateBoardRequest;
 import com.projectinstagram.domain.user.entity.User;
@@ -24,6 +25,8 @@ public class Board extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="user_id")
     private User userId;
+
+    @JsonBackReference
     @OneToMany(mappedBy = "boardId")
     private List<BoardImage> images;
     private String content;
