@@ -28,7 +28,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         /**
          * 로그인/회원가입은 토큰이 없는 경우만 허용
-         * -> 토큰이 있다면 접근 못 하게 막기
+         *
          */
         if (requestUrl.equals("/login") || requestUrl.equals("/join")) {
             filterChain.doFilter(request, response);
@@ -54,6 +54,14 @@ public class JwtFilter extends OncePerRequestFilter {
         String tokenSubstring = authorizationHeader.substring(7);
 
         /**
+         * 토큰 검증 만료시간 조건 처리
+         */
+        if (!jwtUtil.validateToken(tokenSubstring)) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.getWriter().write("{\"error\": \"Unauthorized\"}");
+        }
+
+        /**
          * 토큰 유효성 검사
          */
         if (!jwtUtil.validateToken(tokenSubstring)) {
@@ -67,7 +75,6 @@ public class JwtFilter extends OncePerRequestFilter {
         TokenResponse tokenResponse = new TokenResponse(userId, name, nickname);
 
         request.setAttribute("thisToken", tokenResponse);
-        request.setAttribute("rawToken", tokenSubstring);
 
         filterChain.doFilter(request, response);
     }

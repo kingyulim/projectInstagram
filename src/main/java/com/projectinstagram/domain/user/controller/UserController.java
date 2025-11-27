@@ -45,21 +45,16 @@ public class UserController {
 
     /**
      * 로그아웃 요청 검증
-     * @param session 세선 파라미터
+     * @param servletRequest 토큰 파라미터
      * @return 204 no content
      */
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpSession session) {
-        SessionResponse thisSession = (SessionResponse) session.getAttribute("thisSession");
+    public ResponseEntity<Void> logout(HttpServletRequest servletRequest) {
+        TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
 
-        if (thisSession == null) {
-            throw new CustomException(ExceptionMessageEnum.SESSION_CHECK);
+        if (thisToken == null) {
+            throw new CustomException(ExceptionMessageEnum.TOKEN_CHECK);
         }
-
-        /**
-         * 세션 제거
-         */
-        session.invalidate();
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -73,20 +68,15 @@ public class UserController {
     public ResponseEntity<Void> userDelete(
             @PathVariable Long userId,
             @Valid @RequestBody DeleteUserRequest request,
-            HttpSession session
+            HttpServletRequest servletRequest
     ) {
-        SessionResponse thisSession = (SessionResponse) session.getAttribute("thisSession");
+       TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
 
-        if (thisSession == null) {
-            throw new CustomException(ExceptionMessageEnum.NO_LOGIN);
+        if (!thisToken.getId().equals(userId)) {
+            throw new CustomException(ExceptionMessageEnum.INVALID_MEMBER_INFO);
         }
 
         userService.userDelete(userId, request);
-
-        /**
-         * 세션 제거
-         */
-        session.invalidate();
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -100,17 +90,16 @@ public class UserController {
     @PutMapping("users/profile/{userId}")
     public ResponseEntity<ModifiedUserResponse> modifiedUser(
             @PathVariable Long userId,
-            @RequestPart MultipartFile profileImage,
-            @Valid @RequestPart ModifiedUserRequest request,
+            @Valid @RequestBody ModifiedUserRequest request,
             HttpServletRequest servletRequest
     ) {
         TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
 
-        if (thisToken.getId().equals(userId)) {
+        if (!thisToken.getId().equals(userId)) {
             throw new CustomException(ExceptionMessageEnum.INVALID_MEMBER_INFO);
         }
 
-        return  ResponseEntity.status(HttpStatus.OK).body(userService.modifiedUser(userId, profileImage, request));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.modifiedUser(userId, request));
     }
 
     /**

@@ -2,6 +2,8 @@ package com.projectinstagram.domain.comment.controller;
 
 import com.projectinstagram.domain.comment.dto.*;
 import com.projectinstagram.domain.comment.service.CommentService;
+import com.projectinstagram.domain.user.dto.response.TokenResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,11 +21,11 @@ public class CommentController {
 
     // 댓글 작성하기
     @PostMapping("/{boardId}/comments")
-    public ResponseEntity<CreateCommentResponse> saveComment(@PathVariable Long  boardId,  @Valid @RequestBody CreateCommentRequest request) {
+    public ResponseEntity<CreateCommentResponse> saveComment(@PathVariable Long  boardId,  @Valid @RequestBody CreateCommentRequest request, HttpServletRequest servletRequest) {
 
-        Long userId = 1L; // 테스트용, DB에 있는 첫 번째 유저
+        TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(commentService.save(boardId,userId, request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentService.save(boardId,thisToken.getId(), request));
     }
 
     // 댓글 조회하기
@@ -35,14 +37,20 @@ public class CommentController {
 
     // 댓글 수정하기
     @PatchMapping("/{boardId}/comments/{commentId}")
-    public ResponseEntity<UpdateCommentResponse> updateComment(@PathVariable Long commentId, @Valid @RequestBody UpdateCommentRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(commentService.update(commentId, request));
+    public ResponseEntity<UpdateCommentResponse> updateComment(@PathVariable Long commentId, @Valid @RequestBody UpdateCommentRequest request, HttpServletRequest servletRequest) {
+        TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
+
+        return ResponseEntity.status(HttpStatus.OK).body(commentService.update(commentId, thisToken.getId(),  request));
     }
 
     // 댓글 삭제하기
     @DeleteMapping("/{boardId}/comments/{commentId}")
-    public ResponseEntity<Void>deleteComment(@PathVariable Long commentId) {
-        commentService.delete(commentId);
+    public ResponseEntity<Void> deleteComment(
+            @PathVariable Long commentId,
+            HttpServletRequest servletRequest
+    ) {
+        TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
+        commentService.delete(commentId, thisToken.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
