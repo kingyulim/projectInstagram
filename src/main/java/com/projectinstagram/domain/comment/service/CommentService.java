@@ -74,7 +74,4 @@ public class CommentService {
         }
         commentRepository.deleteById(commentId);
     }
-
-    //COMMENT_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "해당 댓글을 찾을 수 없습니다."),
-    //COMMENT_ACCESS_DENIED_EXCEPTION(HttpStatus.UNAUTHORIZED, "댓글 수정/삭제 권한이 없습니다.")
 }

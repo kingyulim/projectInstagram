@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,18 +27,22 @@ public class ImageService {
             throw new CustomException(ExceptionMessageEnum.NOT_FOUND_THIS_FILE);
 
         String fileName = generateFileName(file);
-        Path filePath = buildFilePath(url, fileName);
-
+        Path uploadDir = buildUploadDir(url);
+//        Path uploadDir = Paths.get(projectRoot);
 
         // 디렉토리가 없을 시 디렉토리를 추가해주는 기능과 저장 기능.
         try {
-            Files.createDirectories(filePath.getParent());
-            file.transferTo(filePath.toFile());
+            if (!Files.exists(uploadDir))
+                Files.createDirectories(uploadDir);
+
+            Path targetLocation = uploadDir.resolve(fileName);
+//            file.transferTo(filePath.toFile());
+
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            return buildPublicUrl(url, fileName);
         } catch (IOException e) {
             throw new RuntimeException("파일 저장 실패", e);
         }
-
-        return buildPublicUrl(url, fileName);
     }
 
     //리스트용
@@ -56,7 +61,7 @@ public class ImageService {
 
     //삭제
     public boolean delete(ImageUrl url, String fileName) {
-        Path filePath = buildFilePath(url, fileName);
+        Path filePath = buildUploadDir(url).resolve(fileName);
         try {
             return Files.deleteIfExists(filePath);
         } catch (IOException e) {
@@ -81,14 +86,13 @@ public class ImageService {
     //파일명 겹치지 않도록 고유값을 추가하여 파일명 지정.
     private String generateFileName(MultipartFile file) {
         String originalName = file.getOriginalFilename();
-        originalName = originalName.replaceAll("[^a-zA-Z0-9._-]", "_");
         return UUID.randomUUID() + "_" + originalName;
     }
 
     //키워드를 디렉토리 경로로 연결해주는 메서드
-    private Path buildFilePath(ImageUrl url, String fileName) {
+    private Path buildUploadDir(ImageUrl url) {
 
-        return Paths.get(projectRoot, ImageUrl.FILE_DIRECORY.getUrl(), url.getUrl(), fileName);
+        return Paths.get(projectRoot, ImageUrl.FILE_DIRECORY.getUrl(), url.getUrl());
     }
 
     // 반환해줄 주소와 파일명.

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -15,6 +16,7 @@ public class BoardImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @JsonBackReference
     @ManyToOne(optional = false)
     @JoinColumn(name="board_id")
@@ -27,7 +29,6 @@ public class BoardImage {
         this.boardId = boardId;
         this.fileName = fileName;
     }
-
     public BoardImage(String fileName) {
         this.fileName = fileName;
     }

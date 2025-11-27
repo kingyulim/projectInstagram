@@ -2,11 +2,13 @@ package com.projectinstagram.domain.board.controller;
 
 import com.projectinstagram.domain.board.dto.*;
 import com.projectinstagram.domain.board.service.BoardService;
+import com.projectinstagram.domain.user.dto.response.TokenResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,11 +18,14 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
 
-    @PostMapping
-    public ResponseEntity<CreateBoardResponse> create(@RequestPart CreateBoardRequest request,
-                                                      @RequestPart List<MultipartFile> files
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CreateBoardResponse> create(@ModelAttribute CreateBoardRequest request,
+                                                      HttpServletRequest servletRequest
                                                       ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(boardService.createBoard(files ,request));
+
+        TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(boardService.createBoard(thisToken.getId(), request));
     }
 
     @GetMapping("/{boardId}")
@@ -30,23 +35,22 @@ public class BoardController {
 
     /** 팔로우 한 사람의 게시물 목록 뿌리기 위해 토큰 필요.*/
     @GetMapping
-    public ResponseEntity<List<ReadBoardResponse>> readAll(@RequestParam Long id) {
-
-        return ResponseEntity.status(HttpStatus.OK).body(boardService.readAllBoard(id));
+    public ResponseEntity<List<ReadBoardResponse>> readAll(HttpServletRequest servletRequest) {
+        TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.readAllBoard(thisToken.getId()));
     }
     
-    @PutMapping
-    public ResponseEntity<UpdateBoardResponse> update(@RequestBody Long boardId, UpdateBoardRequest request) {
+    @PutMapping("/{boardId}")
+    public ResponseEntity<UpdateBoardResponse> update(HttpServletRequest servletRequest,Long boardId, UpdateBoardRequest request) {
 
-
-        return ResponseEntity.status(HttpStatus.OK).body(boardService.updateBoard(boardId, request)); // 일단 임시로
+        TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.updateBoard(thisToken.getId(), boardId, request)); // 일단 임시로
     }
 
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<DeleteBoardResponse> delete(@PathVariable Long boardId) {     // 푸시할려고 void로 변경
-        DeleteBoardResponse response = boardService.deleteBoard(boardId);
-
-        return ResponseEntity.ok(response);
+    public ResponseEntity<DeleteBoardResponse> delete(HttpServletRequest servletRequest, @PathVariable Long boardId) {     // 푸시할려고 void로 변경
+        TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.deleteBoard(thisToken.getId(), boardId));
     }
 
 //    @PostMapping("/upload_image")
