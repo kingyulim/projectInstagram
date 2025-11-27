@@ -29,8 +29,10 @@ public class BoardController {
     }
 
     @GetMapping("/{boardId}")
-    public ResponseEntity<ReadBoardResponse> read(@PathVariable Long boardId) {
-        return ResponseEntity.status(HttpStatus.OK).body(boardService.readOneBoard(boardId));
+    public ResponseEntity<ReadBoardResponse> read(HttpServletRequest servletRequest, @PathVariable Long boardId) {
+        TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
+
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.readOneBoard(thisToken.getId(), boardId));
     }
 
     /** 팔로우 한 사람의 게시물 목록 뿌리기 위해 토큰 필요.*/

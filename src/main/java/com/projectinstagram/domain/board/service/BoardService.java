@@ -9,6 +9,9 @@ import com.projectinstagram.domain.board.entity.Board;
 import com.projectinstagram.domain.board.entity.BoardImage;
 import com.projectinstagram.domain.board.repository.BoardImageRepository;
 import com.projectinstagram.domain.board.repository.BoardRepository;
+import com.projectinstagram.domain.comment.repository.CommentRepository;
+import com.projectinstagram.domain.like.dto.CreateResponse;
+import com.projectinstagram.domain.like.service.BoardLikeService;
 import com.projectinstagram.domain.user.entity.User;
 import com.projectinstagram.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardService {
     private final BoardRepository boardRepository;
+    private final BoardLikeService likeService;
+    private final CommentRepository commentRepository;
     private final BoardImageRepository imageRepository;
     private final UserRepository userRepository;
     private final ImageService imageService;
@@ -40,10 +45,12 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public ReadBoardResponse readOneBoard(Long boardId) {
+    public ReadBoardResponse readOneBoard(Long userId, Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(
                 () -> new CustomException(ExceptionMessageEnum.BOARD_NOT_FOUND_EXCEPTION));
-        return new ReadBoardResponse(BoardDto.from(board));  // 더미데이터로 임시처리
+        CreateResponse likeCount = likeService.CreateBoardLike(boardId, userId);
+        Long commentCount = commentRepository.countByBoardId(board);
+        return new ReadBoardResponse(commentCount, likeCount.getLikeCount(),BoardDto.from(board));  // 더미데이터로 임시처리
     }
 
     @Transactional(readOnly = true)
@@ -52,7 +59,9 @@ public class BoardService {
         List<ReadBoardResponse> result = new ArrayList<>();
 
         for (Board board : boards) {
-            result.add(new ReadBoardResponse(BoardDto.from(board)));
+            CreateResponse likeCount = likeService.CreateBoardLike(board.getId(), id);
+            Long commentCount = commentRepository.countByBoardId(board);
+            result.add(new ReadBoardResponse(commentCount, likeCount.getLikeCount(), BoardDto.from(board)));
         }
         return result;
     }
