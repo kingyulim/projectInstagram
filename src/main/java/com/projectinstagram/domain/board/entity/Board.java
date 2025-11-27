@@ -1,6 +1,8 @@
 package com.projectinstagram.domain.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.projectinstagram.common.entity.BaseTimeEntity;
+import com.projectinstagram.domain.board.dto.CreateBoardRequest;
 import com.projectinstagram.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

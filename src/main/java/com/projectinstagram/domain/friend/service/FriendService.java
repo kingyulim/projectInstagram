@@ -6,6 +6,7 @@ import com.projectinstagram.domain.friend.entity.Friend;
 import com.projectinstagram.domain.friend.entity.FriendId;
 import com.projectinstagram.domain.friend.repository.FriendRepository;
 import com.projectinstagram.domain.user.entity.User;
+import com.projectinstagram.domain.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

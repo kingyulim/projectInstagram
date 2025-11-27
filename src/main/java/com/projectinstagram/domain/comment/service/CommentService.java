@@ -3,10 +3,13 @@ package com.projectinstagram.domain.comment.service;
 import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.common.exception.ExceptionMessageEnum;
 import com.projectinstagram.domain.board.entity.Board;
+import com.projectinstagram.domain.board.repository.BoardRepository;
 import com.projectinstagram.domain.comment.dto.*;
 import com.projectinstagram.domain.comment.entity.Comment;
 import com.projectinstagram.domain.comment.repository.CommentRepository;
+import com.projectinstagram.domain.like.repository.CommentLikeRepository;
 import com.projectinstagram.domain.user.entity.User;
+import com.projectinstagram.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     // 댓글 작성
     @Transactional
@@ -46,34 +50,56 @@ public class CommentService {
 
         List<Comment> comments = commentRepository.findByBoardId(board);
         return comments.stream()
-                .map(c -> new GetCommentResponse(
-                        c.getId(),
-                        c.getUserId().getId(),
-                        c.getBoardId().getId(),
-                        c.getContent(),
-                        c.getCreatedAt(),
-                        c.getModifiedAt()
-                ))
+                .map(c -> {
+                    Long likeCount = commentLikeRepository.countByComment_Id(c.getId());
+                    return new GetCommentResponse(
+                            c.getId(),
+                            c.getUserId().getId(),
+                            c.getBoardId().getId(),
+                            c.getContent(),
+                            likeCount,
+                            c.getCreatedAt(),
+                            c.getModifiedAt()
+                    );
+                })
                 .toList();
     }
 
     // 댓글수정
     @Transactional
-    public UpdateCommentResponse update(Long commentId, UpdateCommentRequest request) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ExceptionMessageEnum.BOARD_NOT_FOUND_EXCEPTION));//new CustomException(ExceptionMessageEnum.COMMENT_NOT_FOUND_EXCEPTION));
-        comment.update(request.getContent());
-        return new UpdateCommentResponse(comment.getId(), comment.getUserId().getId(), comment.getBoardId().getId(), comment.getContent(), comment.getCreatedAt(), comment.getModifiedAt());
-    }
+    public UpdateCommentResponse update(Long commentId, Long userId, UpdateCommentRequest request) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ExceptionMessageEnum.COMMENT_NOT_FOUND_EXCEPTION));
 
-    @Transactional
-    public void delete(Long commentId) {
-        boolean existence = commentRepository.existsById(commentId);
-        if (!existence) {
-            throw new CustomException(ExceptionMessageEnum.BOARD_NOT_FOUND_EXCEPTION);//new CustomException(ExceptionMessageEnum.COMMENT_NOT_FOUND_EXCEPTION);
+        if (!comment.getUserId().getId().equals(userId)) {
+            throw new CustomException(ExceptionMessageEnum.INVALID_MEMBER_INFO);
         }
-        commentRepository.deleteById(commentId);
+        comment.update(request.getContent());
+        Long likeCount = commentLikeRepository.countByComment_Id(comment.getId());
+
+        return new UpdateCommentResponse(
+                comment.getId(),
+                comment.getUserId().getId(),
+                comment.getBoardId().getId(),
+                comment.getContent(),
+                likeCount,
+                comment.getCreatedAt(),
+                comment.getModifiedAt()
+        );
     }
 
-    //COMMENT_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "해당 댓글을 찾을 수 없습니다."),
-    //COMMENT_ACCESS_DENIED_EXCEPTION(HttpStatus.UNAUTHORIZED, "댓글 수정/삭제 권한이 없습니다.")
+    // 댓글 삭제
+    @Transactional
+    public void delete(Long commentId, Long userId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(ExceptionMessageEnum.COMMENT_NOT_FOUND_EXCEPTION));
+
+        // 본인 확인
+        if (!comment.getUserId().getId().equals(userId)) {
+            throw new CustomException(ExceptionMessageEnum.INVALID_MEMBER_INFO);
+        }
+
+        commentRepository.delete(comment);
+    }
+
+
 }
