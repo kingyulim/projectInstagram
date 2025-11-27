@@ -4,6 +4,7 @@ import com.projectinstagram.domain.board.entity.BoardImage;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,9 +26,24 @@ public class ReadBoardResponse {
         this.profileImg = dto.getUserId().getProfileImage();
         this.content = dto.getContent();
         this.images = dto.getContentImg();
-        this.likeCount = likeCount; // 더미데이터
-        this.commentCount = commentCount; // 더미데이터
+        this.likeCount = likeCount;
+        this.commentCount = commentCount;
         this.createAt = dto.getCreatedAt();
         this.modifiedAt = dto.getModifiedAt();
     }
+
+    public ReadBoardResponse(Long commentCount, Long likeCount,
+                             Long id, String nickName, String profileImg,
+                             String content, LocalDateTime createAt, LocalDateTime modifiedAt) {
+        this.id = id;
+        this.nickName = nickName;
+        this.profileImg = profileImg;
+        this.content = content;
+        this.images = new ArrayList<>();
+        this.likeCount = likeCount;
+        this.commentCount = commentCount;
+        this.createAt = createAt;
+        this.modifiedAt = modifiedAt;
+    }
+
 }

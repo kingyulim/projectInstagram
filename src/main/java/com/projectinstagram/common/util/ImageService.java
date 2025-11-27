@@ -18,8 +18,6 @@ import java.util.UUID;
 
 @Service
 public class ImageService {
-    @Value("${root.project-dir}")
-    private String projectRoot;
 
     //단건 저장.
     public String store(ImageUrl url, MultipartFile file) {
@@ -92,11 +90,11 @@ public class ImageService {
     //키워드를 디렉토리 경로로 연결해주는 메서드
     private Path buildUploadDir(ImageUrl url) {
 
-        return Paths.get(projectRoot, ImageUrl.FILE_DIRECORY.getUrl(), url.getUrl());
+        return Paths.get(ImageUrl.FILE_DIRECORY.getUrl(), url.getUrl());
     }
 
     // 반환해줄 주소와 파일명.
     private String buildPublicUrl(ImageUrl url, String fileName) {
-        return "/" + ImageUrl.FILE_DIRECORY.getUrl() + "/" + url.getUrl() + "/" + fileName;
+        return ImageUrl.FILE_DIRECORY.getUrl().substring(1) + "/" + url.getUrl() + "/" + fileName;
     }
 }
