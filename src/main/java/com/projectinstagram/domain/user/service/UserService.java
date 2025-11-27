@@ -3,8 +3,6 @@ package com.projectinstagram.domain.user.service;
 import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.common.exception.ExceptionMessageEnum;
 import com.projectinstagram.common.jwt.JwtUtil;
-import com.projectinstagram.common.util.ImageService;
-import com.projectinstagram.common.util.ImageUrl;
 import com.projectinstagram.common.util.PasswordEncoder;
 import com.projectinstagram.domain.user.dto.request.*;
 import com.projectinstagram.domain.user.dto.response.JoinUserResponse;
@@ -16,7 +14,6 @@ import com.projectinstagram.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -24,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ImageService imageService;
     private final JwtUtil jwtUtil;
 
     /**
