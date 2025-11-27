@@ -35,8 +35,8 @@ public class BoardLikeService {
         } else {
             Board board = boardRepository.findById(boardId).orElseThrow(() -> new CustomException(ExceptionMessageEnum.BOARD_NOT_FOUND_EXCEPTION));
             User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionMessageEnum.NO_MEMBER_ID));
-            if (board.getUserId().getId().equals(userId)) { //본인이 작성한 게시물과 댓글에 좋아요를 남길 수 없는 기능 /*병합시 board 엔티티의 user필드 명칭 변경되면 에러*/
-                throw new CustomException(ExceptionMessageEnum.SELF_LIKE_EXCEPTION); /*에러 추가: 본인이 작성한 게시물과 댓글에 좋아요를 남길 수 없습니다.*/
+            if (board.getUserId().getId().equals(userId)) { //본인이 작성한 게시물과 댓글에 좋아요를 남길 수 없는 기능
+                throw new CustomException(ExceptionMessageEnum.SELF_LIKE_EXCEPTION);
             } else {
                 BoardLike boardLike = new BoardLike(board, user);
                 boardLikeRepository.save(boardLike); //좋아요가 안눌려있으면 좋아요 생성
