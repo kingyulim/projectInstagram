@@ -2,11 +2,13 @@ package com.projectinstagram.domain.like.service;
 
 import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.domain.board.entity.Board;
+import com.projectinstagram.domain.board.repository.BoardRepository;
 import com.projectinstagram.domain.like.dto.CreateResponse;
 import com.projectinstagram.domain.like.entity.BoardLike;
 import com.projectinstagram.domain.like.entity.BoardLikeId;
 import com.projectinstagram.domain.like.repository.BoardLikeRepository;
 import com.projectinstagram.domain.user.entity.User;
+import com.projectinstagram.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
