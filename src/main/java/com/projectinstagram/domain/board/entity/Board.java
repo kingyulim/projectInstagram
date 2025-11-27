@@ -8,7 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
+
 @Getter
+@Setter
 @Entity
 @Table(name="boards")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,6 +23,18 @@ public class Board extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="user_id")
     private User userId;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "boardId")
+    private List<BoardImage> images;
     private String content;
 
+    public Board(User user, CreateBoardRequest request) {
+        this.userId = user;
+        this.content = request.getContent();
+    }
+
+    public static Board from(User user, CreateBoardRequest request) {
+        return new Board(user, request);
+    }
 }
