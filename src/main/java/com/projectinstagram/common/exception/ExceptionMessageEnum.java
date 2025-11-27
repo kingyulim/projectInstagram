@@ -11,6 +11,7 @@ public enum ExceptionMessageEnum {
     NO_MEMBER_INFO(HttpStatus.NOT_FOUND, "해당 회원 정보를 찾을 수 없습니다."),
     LOGIN_CHECK(HttpStatus.UNAUTHORIZED, "로그인이 되어있습니다."),
     SESSION_CHECK(HttpStatus.NOT_FOUND, "세션이 존재하지 않습니다."),
+    TOKEN_CHECK(HttpStatus.NOT_FOUND, "토큰이 존재하지 않습니다."),
     IS_DELETION_USER(HttpStatus.UNAUTHORIZED, "탈퇴한 회원입니다."),
     INVALID_MEMBER_INFO(HttpStatus.BAD_REQUEST, "회원 정보가 일치하지 않습니다."),
     NO_LOGIN(HttpStatus.UNAUTHORIZED, "로그인이 되지 않았습니다."),
