@@ -5,6 +5,7 @@ import com.projectinstagram.common.exception.ExceptionMessageEnum;
 import com.projectinstagram.domain.user.dto.request.*;
 import com.projectinstagram.domain.user.dto.response.*;
 import com.projectinstagram.domain.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,30 +36,9 @@ public class UserController {
      */
     @PostMapping("/login")
     public ResponseEntity<LoginUserResponse> login(
-            @Valid @RequestBody AcountUserRequest request,
-            HttpSession session
+            @Valid @RequestBody AcountUserRequest request
     ) {
-        SessionResponse thisSession = (SessionResponse) session.getAttribute("thisSession");
-
-        /**
-         * thisSession 세션 없으면 예외처리
-         */
-        if (thisSession != null) {
-            throw new CustomException(ExceptionMessageEnum.LOGIN_CHECK);
-        }
-
         LoginUserResponse loginUserResponse = userService.login(request);
-
-        SessionResponse sessionResponse = new SessionResponse(
-                loginUserResponse.getId(),
-                loginUserResponse.getName(),
-                loginUserResponse.getNickname()
-        );
-
-        /**
-         * 세션 생성
-         */
-        session.setAttribute("thisSession", sessionResponse);
 
         return ResponseEntity.status(HttpStatus.OK).body(loginUserResponse);
     }
@@ -115,7 +95,6 @@ public class UserController {
      * 프로필 업데이트 요청 검증
      * @param userId 회원 고유 번호
      * @param request 입력값 파라미터
-     * @param session 세션 파라미터
      * @return ModifiedUserResponse json 반환
      */
     @PutMapping("users/profile/{userId}")
@@ -123,15 +102,11 @@ public class UserController {
             @PathVariable Long userId,
             @RequestPart MultipartFile profileImage,
             @Valid @RequestPart ModifiedUserRequest request,
-            HttpSession session
+            HttpServletRequest servletRequest
     ) {
-        SessionResponse thisSession = (SessionResponse) session.getAttribute("thisSession");
+        TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
 
-        if (thisSession == null) {
-            throw new CustomException(ExceptionMessageEnum.NO_LOGIN);
-        }
-
-        if (!thisSession.getId().equals(userId)) {
+        if (thisToken.getId().equals(userId)) {
             throw new CustomException(ExceptionMessageEnum.INVALID_MEMBER_INFO);
         }
 
@@ -145,11 +120,8 @@ public class UserController {
      */
     @GetMapping("/users/{userId}")
     public ResponseEntity<ProfileViewResponse> profileView(
-            @PathVariable Long userId,
-            HttpSession session
+            @PathVariable Long userId
     ) {
-        SessionResponse thisSession = (SessionResponse) session.getAttribute("thisSession");
-
         return ResponseEntity.status(HttpStatus.OK).body(userService.profileView(userId));
     }
 
@@ -157,28 +129,21 @@ public class UserController {
      * 비밀번호 변경 요청 검증
      * @param userId 회원 고유 번호
      * @param request 입력값 파라미터
-     * @param session 세션 파라미터
      * @return 200 OK
      */
     @PutMapping("/users/password/{userId}")
     public ResponseEntity<Void> passwordModified(
             @PathVariable Long userId,
             @Valid @RequestBody PasswordChangeRequest request,
-            HttpSession session
+            HttpServletRequest servletRequest
     ) {
-        SessionResponse thisSession = (SessionResponse) session.getAttribute("thisSession");
+        TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
 
-        if (thisSession == null) {
-            throw new CustomException(ExceptionMessageEnum.NO_LOGIN);
-        }
-
-        if (!thisSession.getId().equals(userId)) {
+        if (!thisToken.getId().equals(userId)) {
             throw new CustomException(ExceptionMessageEnum.INVALID_MEMBER_INFO);
         }
 
         userService.passwordModified(userId, request);
-
-        session.invalidate();
 
         return ResponseEntity.ok().build();
     }

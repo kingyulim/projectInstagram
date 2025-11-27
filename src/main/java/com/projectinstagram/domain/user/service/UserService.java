@@ -2,6 +2,7 @@ package com.projectinstagram.domain.user.service;
 
 import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.common.exception.ExceptionMessageEnum;
+import com.projectinstagram.common.jwt.JwtUtil;
 import com.projectinstagram.common.util.ImageService;
 import com.projectinstagram.common.util.ImageUrl;
 import com.projectinstagram.common.util.PasswordEncoder;
@@ -24,6 +25,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ImageService imageService;
+    private final JwtUtil jwtUtil;
 
     /**
      * 회원가입 비니지스 로직 처리
@@ -91,6 +93,12 @@ public class UserService {
             throw new CustomException(ExceptionMessageEnum.INVALID_MEMBER_INFO);
         }
 
+        String token = jwtUtil.generateToken(
+                user.getId(),
+                user.getName(),
+                user.getNickname()
+        );
+
         return new LoginUserResponse(
                 user.getId(),
                 user.getNickname(),
@@ -98,7 +106,8 @@ public class UserService {
                 user.getProfileImage(),
                 user.getIntroduce(),
                 user.getCreatedAt(),
-                user.getModifiedAt()
+                user.getModifiedAt(),
+                token
         );
     }
 
