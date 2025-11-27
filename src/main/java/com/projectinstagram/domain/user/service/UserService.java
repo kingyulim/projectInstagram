@@ -2,6 +2,8 @@ package com.projectinstagram.domain.user.service;
 
 import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.common.exception.ExceptionMessageEnum;
+import com.projectinstagram.common.util.ImageService;
+import com.projectinstagram.common.util.ImageUrl;
 import com.projectinstagram.common.util.PasswordEncoder;
 import com.projectinstagram.domain.user.dto.request.*;
 import com.projectinstagram.domain.user.dto.response.JoinUserResponse;
@@ -13,6 +15,7 @@ import com.projectinstagram.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ImageService imageService;
 
     /**
      * 회원가입 비니지스 로직 처리
@@ -148,7 +152,7 @@ public class UserService {
      * @param request 입력 파라미터
      * @return ModifiedUserResponse 데이터 반환
      */
-    public ModifiedUserResponse modifiedUser(Long userId, ModifiedUserRequest request) {
+    public ModifiedUserResponse modifiedUser(Long userId, MultipartFile profileImg, ModifiedUserRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(
                         () -> new CustomException(ExceptionMessageEnum.NO_MEMBER_ID)
@@ -158,12 +162,14 @@ public class UserService {
             throw new CustomException(ExceptionMessageEnum.IS_DELETION_USER);
         }
 
+        String imgPath = imageService.store(ImageUrl.USER_URL, profileImg);
+
         user.userModified(
                 request.getEmail(),
                 request.getNickname(),
                 request.getName(),
                 request.getIntroduce(),
-                request.getProfileImg()
+                imgPath
         );
 
         return new ModifiedUserResponse(
