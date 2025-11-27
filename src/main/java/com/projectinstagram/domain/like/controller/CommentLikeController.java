@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/boards/{boardId}/comments/{commentId}")
+@RequestMapping("/likes/boards/{boardId}/comments/{commentId}")
 public class CommentLikeController {
 
     private final CommentLikeService commentLikeService;
 
     //댓글 좋아요 생성,조회
-    @PostMapping("/likes")
+    @PostMapping
     public ResponseEntity<CreateResponse> CreateCommentLike(@PathVariable Long commentId, HttpServletRequest servletRequest) {
         TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
         Long userId = thisToken.getId();

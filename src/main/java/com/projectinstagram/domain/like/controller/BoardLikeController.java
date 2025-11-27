@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/boards/{boardId}")
+@RequestMapping("/likes/boards/{boardId}")
 public class BoardLikeController {
 
     private final BoardLikeService boardLikeService;
 
     //게시물 좋아요 생성,조회
-    @PostMapping("/likes")
+    @PostMapping
     public ResponseEntity<CreateResponse> CreateBoardLike(@PathVariable Long boardId, HttpServletRequest servletRequest) {
         TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
         Long userId = thisToken.getId();
