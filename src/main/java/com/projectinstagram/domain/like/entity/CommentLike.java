@@ -1,5 +1,6 @@
 package com.projectinstagram.domain.like.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.projectinstagram.domain.comment.entity.Comment;
 import com.projectinstagram.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -16,6 +17,7 @@ public class CommentLike {
     @EmbeddedId
     private CommentLikeId id;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "comment_id", nullable = false)
     @MapsId("commentId")//복합키의 commentId와 매핑

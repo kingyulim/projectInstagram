@@ -1,5 +1,6 @@
 package com.projectinstagram.domain.like.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.projectinstagram.domain.board.entity.Board;
 import com.projectinstagram.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -16,6 +17,7 @@ public class BoardLike {
     @EmbeddedId
     private BoardLikeId id;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "board_id", nullable = false)
     @MapsId("boardId")//복합키의 boardId와 매핑

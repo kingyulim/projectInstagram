@@ -58,5 +58,4 @@ public class FriendController {
     public ResponseEntity<ReadCountAndUserResponse> getFollowCountList(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(friendService.getFollowCountList(userId));
     }
-
 }

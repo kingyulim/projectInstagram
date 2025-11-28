@@ -56,6 +56,7 @@ public class DataInitializer implements CommandLineRunner {
         Friend Friend32 = new Friend(user3, user2);
         Friend Friend42 = new Friend(user4, user2);
         Friend Friend52 = new Friend(user5, user2);
+
         //친구관계 생성
         friendRepository.save(Friend12);
         friendRepository.save(Friend13);
@@ -79,11 +80,45 @@ public class DataInitializer implements CommandLineRunner {
                 return "게시물2 내용2";
             }
         };
+        CreateBoardRequest boardDto3 = new CreateBoardRequest() {
+            @Override
+            public String getContent() {
+                return "게시물3 내용3";
+            }
+        };
+        CreateBoardRequest boardDto4 = new CreateBoardRequest() {
+            @Override
+            public String getContent() {
+                return "게시물4 내용4";
+            }
+        };
+        CreateBoardRequest boardDto5 = new CreateBoardRequest() {
+            @Override
+            public String getContent() {
+                return "게시물5 내용5";
+            }
+        };
+        CreateBoardRequest boardDto6 = new CreateBoardRequest() {
+            @Override
+            public String getContent() {
+                return "게시물6 내용6";
+            }
+        };
+
         Board board1 = new Board(user1, boardDto1);
-        Board board2 = new Board(user1, boardDto2);
+        Board board2 = new Board(user2, boardDto2);
+        Board board3 = new Board(user3, boardDto3);
+        Board board4 = new Board(user1, boardDto4);
+        Board board5 = new Board(user1, boardDto5);
+        Board board6 = new Board(user1, boardDto6);
+
         //게시물 생성
         boardRepository.save(board1);
         boardRepository.save(board2);
+        boardRepository.save(board3);
+        boardRepository.save(board4);
+        boardRepository.save(board5);
+        boardRepository.save(board6);
 
         //게시물 좋아요
         BoardLike boardLike2 = new BoardLike(board1, user2);
@@ -107,13 +142,10 @@ public class DataInitializer implements CommandLineRunner {
         CommentLike commentLike2 = new CommentLike(comment1, user2);
         CommentLike commentLike3 = new CommentLike(comment1, user3);
         CommentLike commentLike4 = new CommentLike(comment1, user4);
+
         //댓글 좋아요 생성
         commentLikeRepository.save(commentLike2);
         commentLikeRepository.save(commentLike3);
         commentLikeRepository.save(commentLike4);
-
-
-
-
     }
 }
