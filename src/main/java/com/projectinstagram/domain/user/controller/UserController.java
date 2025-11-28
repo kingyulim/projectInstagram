@@ -88,11 +88,10 @@ public class UserController {
      * @param request 입력값 파라미터
      * @return ModifiedUserResponse json 반환
      */
-    @PutMapping(value = "users/profile/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "users/profile/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ModifiedUserResponse> modifiedUser(
             @PathVariable Long userId,
-            @Valid @RequestPart("request") ModifiedUserRequest request,
-            @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
+            @Valid @ModelAttribute ModifiedUserRequest request,
             HttpServletRequest servletRequest
     ) {
         TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
@@ -101,7 +100,7 @@ public class UserController {
             throw new CustomException(ExceptionMessageEnum.INVALID_MEMBER_INFO);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(userService.modifiedUser(userId, profileImg, request));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.modifiedUser(userId, request));
     }
 
     /**

@@ -36,5 +36,5 @@ public class ModifiedUserRequest {
 
     private String introduce;
 
-    //private MultipartFile profileImg;
+    private MultipartFile profileImg;
 }
