@@ -132,6 +132,7 @@ public class DataInitializer implements CommandLineRunner {
         Comment comment2 = new Comment(board1, user1, "댓글");
         Comment comment3 = new Comment(board1, user1, "댓글");
         Comment comment4 = new Comment(board1, user1, "댓글");
+
         //댓글 생성
         commentRepository.save(comment1);
         commentRepository.save(comment2);

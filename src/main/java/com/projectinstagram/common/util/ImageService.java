@@ -2,7 +2,6 @@ package com.projectinstagram.common.util;
 
 import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.common.exception.ExceptionMessageEnum;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,9 +54,10 @@ public class ImageService {
 
     //삭제
     public boolean delete(ImageUrl url, String fileName) {
-        Path filePath = buildUploadDir(url).resolve(fileName);
+        Path filePath = buildUploadDir(url);
+        Path targetLocation = filePath.resolve(fileName);
         try {
-            return Files.deleteIfExists(filePath);
+            return Files.deleteIfExists(targetLocation);
         } catch (IOException e) {
             throw new CustomException(ExceptionMessageEnum.FAILED_DELETE_FILE);
         }
@@ -91,6 +91,6 @@ public class ImageService {
 
     // 반환해줄 주소와 파일명.
     private String buildPublicUrl(ImageUrl url, String fileName) {
-        return ImageUrl.FILE_DIRECORY.getUrl().substring(1) + "/" + url.getUrl() + "/" + fileName;
+        return fileName;
     }
 }

@@ -82,6 +82,11 @@ public class BoardService {
         if (board.getUserId().getId().equals(tokenId)) {
             new CustomException(ExceptionMessageEnum.NO_MEMBER_INFO);
         }
+        List<BoardImage> images = boardImageRepository.findAllByBoardId(board);
+        for (BoardImage image: images) {
+
+            imageService.delete(ImageUrl.BOARD_URL,image.getFileName());
+        }
         boardRepository.delete(board);
 
         return new DeleteBoardResponse("게시물이 삭제되었습니다");
