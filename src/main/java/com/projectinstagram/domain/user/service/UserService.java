@@ -3,6 +3,7 @@ package com.projectinstagram.domain.user.service;
 import com.projectinstagram.common.exception.CustomException;
 import com.projectinstagram.common.exception.ExceptionMessageEnum;
 import com.projectinstagram.common.jwt.JwtUtil;
+import com.projectinstagram.common.regexp.RegEXP;
 import com.projectinstagram.common.util.ImageService;
 import com.projectinstagram.common.util.ImageUrl;
 import com.projectinstagram.common.util.PasswordEncoder;
@@ -57,7 +58,7 @@ public class UserService {
         /**
          * 닉네임 정규식 검사
          */
-        boolean isValid = request.getNickname().matches("^[A-Za-z0-9](?:[A-Za-z0-9._]*[A-Za-z0-9])$");
+        boolean isValid = request.getNickname().matches(RegEXP.NICKNAME);
 
         if (!isValid) {
             throw new CustomException(ExceptionMessageEnum.PATTERN_VALIDATION_FAILED_EXCEPTION);
