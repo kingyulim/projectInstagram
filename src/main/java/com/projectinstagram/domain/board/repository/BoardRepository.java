@@ -43,7 +43,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             LEFT JOIN comments c ON c.board_id = b.id
             WHERE f.user_id_from = :userId
             GROUP BY b.id, u.nickname, u.profile_image, b.content, b.created_at, b.modified_at
-            ORDER BY b.created_at DESC
             """,
             nativeQuery = true)
     Page<ReadAllBoardResponse> findAllBoardDetails(@Param("userId") Long userId, Pageable pageable);
