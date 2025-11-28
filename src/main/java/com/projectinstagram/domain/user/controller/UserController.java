@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -87,10 +88,11 @@ public class UserController {
      * @param request 입력값 파라미터
      * @return ModifiedUserResponse json 반환
      */
-    @PutMapping("users/profile/{userId}")
+    @PutMapping(value = "users/profile/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ModifiedUserResponse> modifiedUser(
             @PathVariable Long userId,
-            @Valid @RequestBody ModifiedUserRequest request,
+            @Valid @RequestPart("request") ModifiedUserRequest request,
+            @RequestPart(value = "profileImg", required = false) MultipartFile profileImg,
             HttpServletRequest servletRequest
     ) {
         TokenResponse thisToken = (TokenResponse) servletRequest.getAttribute("thisToken");
@@ -99,7 +101,7 @@ public class UserController {
             throw new CustomException(ExceptionMessageEnum.INVALID_MEMBER_INFO);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(userService.modifiedUser(userId, request));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.modifiedUser(userId, profileImg, request));
     }
 
     /**

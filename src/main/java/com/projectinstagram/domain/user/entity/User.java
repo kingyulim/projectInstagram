@@ -60,14 +60,14 @@ public class User extends BaseTimeEntity {
             String email,
             String nickname,
             String name,
-            String introduce
-            //String profileImage
+            String introduce,
+            String profileImage
     ) {
         this.email = email;
         this.nickname = nickname;
         this.name = name;
         this.introduce = introduce;
-        //this.profileImage = profileImage;
+        this.profileImage = profileImage;
     }
 
     /**
